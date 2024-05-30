@@ -1,6 +1,7 @@
 ---
-title: 개발자가 되기 위한 길 닦는 중!
+title: Learning from internship
 ---
+
 # Cloudflare
 
 - Cloudflare Workers & Pages 에 들어가서 설정 가능
