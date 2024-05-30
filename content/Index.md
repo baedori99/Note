@@ -23,3 +23,4 @@ print(str1[num])
 - () : 이건 이미지 주소를 넣는 곳 (이미지 링크를 생성하는 곳 imgur )
 - Ex)
 ![](https://imgur.com/GYIKo4T.png)
+# 테스트용
