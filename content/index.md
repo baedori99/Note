@@ -1,4 +1,8 @@
-# Cloudflare d
+---
+title: Baedori99
+---
+
+# Cloudflare 
 
 - Cloudflare Workers & Pages 에 들어가서 설정 가능
 - 자동으로 obsidian에서 commit을 하게 되면 사이트에도 자동으로 배포가 됨
