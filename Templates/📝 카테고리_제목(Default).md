@@ -2,7 +2,7 @@
 title: 📝 카테고리_제목
 description: 설명을 입력하세요
 date: <% tp.date.now('YYYY-MM-DD') %>
-draft:
+draft: false
 ---
 
 > [!tip] Summary
