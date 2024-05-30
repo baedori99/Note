@@ -1,5 +1,5 @@
 ---
-title: 개발자가 되기 위한 길 닦는 중!
+title: 뚝바이브 개발자
 ---
 # Cloudflare de
 - Cloudflare Workers & Pages 에 들어가서 설정 가능
