@@ -1,5 +1,6 @@
 ---
 title: Learning from internship
+date: <%= tp.date.now('2024-06-07') %>
 ---
 
 # Cloudflare
