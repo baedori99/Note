@@ -25,8 +25,7 @@ num = int(input())
 print(str1[num])
 ```
 
-`gfgfg`kjkjkhhk
-
+`사용하는 방법` 
 # 이미지를 이곳에 적용하는 방식
 
 ![]()
