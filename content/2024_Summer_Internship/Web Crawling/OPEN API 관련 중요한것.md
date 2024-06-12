@@ -1,5 +1,5 @@
 ---
-title: Open API 관련 중요한 것
+title: Important Things with using OPEN API
 ---
 [[Urllib에 관하여]]
 

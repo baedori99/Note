@@ -1,5 +1,5 @@
 ---
-title: urllib 모듈에 관하여
+title: Urllib Module
 create_date: 2024-06-04 14:06 - 2024-06-04 14:06
 description: 네이버 API를 통해 파이썬으로 뉴스 기사를 불러오는 코드를 공부하는 중에 urllib모듈에 관하여 궁금하여 공부하고자 정리해봄!!!
 ---
