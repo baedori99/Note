@@ -1,6 +1,7 @@
 ---
 title: Selenium_Crawling_practice2
 create_date: 2024-06-12 17:06 - 2024-06-12 17:06
+draft: false
 ---
 # Selenium Crawling Melon Hot Chart 100 Information
 
@@ -25,7 +26,7 @@ create_date: 2024-06-12 17:06 - 2024-06-12 17:06
 >	`for`
 >		`1.곡 정보의 아이콘 클릭`
 >		`2.곡 이름, 가수명, 장르, 좋아요, 가사 크롤링` 
->		`3. 뒤로가기`
+>		`3.뒤로가기`
 >3. 데이터프레임
 
 ---
@@ -102,6 +103,8 @@ ActionChains(driver).click(song_info).perform()
 
 ```python
 # 곡 이름 가져오기
+# temp는 정보가 담겨있는 박스를 의미한다.
+# `temp = driver.find_element(By.ID, 'conts')로 써도 괜찮다.`
 temp = driver.find_elements(By.ID, 'conts')
 song_name = temp[0].find_elements(By.CLASS_NAME, 'song_name')
 
@@ -208,3 +211,112 @@ for i in range(100):
 - `driver.back()`: 페이지 뒤로가기
 
 ---
+### 7. 최종 코드
+
+```python
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options 
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.actions.action_builder import ActionBuilder
+from selenium.webdriver.common.actions.mouse_button import MouseButton
+from selenium.webdriver import ActionChains
+import time
+import pandas as pd
+
+  
+
+def melon_song_info(url):
+
+    # 크롬 창 열기
+    options = Options()
+    driver = webdriver.Chrome(options=options)
+
+    # 멜론 홈페이지 접속
+    driver.get(url)
+
+    # 멜론 차트 경로 찾기
+    melon_charts = driver.find_element(By.XPATH, '/html/body/div[1]/div[2]/div/div[2]/ul[1]/li[1]/a/span[2]')
+
+    # 멜론 차트 버튼 누르기
+    ActionChains(driver).click(melon_charts).perform()
+
+    # 2초 시간 기다리기
+    time.sleep(2)
+
+    # HOT100 경로 찾기
+    hot100_charts = driver.find_element(By.XPATH, '//*[@id="gnb_menu"]/ul[1]/li[1]/div/ul/li[2]/a/span')
+
+    # HOT100 버튼 누르기
+    ActionChains(driver).click(hot100_charts).perform()
+
+    # rows 출력
+    rows_50 = driver.find_elements(By.CLASS_NAME, 'lst50')
+    rows_100 = driver.find_elements(By.CLASS_NAME, 'lst100')
+
+	# 데이터 받을 빈 딕셔너리 만들기
+    all_info = {"Title":[],"Singer":[],"Genre":[],"Like":[],"Lyric":[]}
+
+  
+  
+	# 1~100위까지 해야하지만 시간이 오래 걸리므로 10위까지만 받았다.
+    for i in range(10):
+
+        if i < 10:
+            song_info = rows_50[i].find_element(By.CLASS_NAME, 'btn.button_icons.type03.song_info')
+            
+            ActionChains(driver).click(song_info).perform()
+            
+            info_box = driver.find_elements(By.ID, 'conts')
+            
+            song_name = info_box[0].find_element(By.CLASS_NAME, 'song_name').text
+            
+            singer_name = info_box[0].find_element(By.XPATH, '//*[@id="downloadfrm"]/div/div/div[2]/div[1]/div[2]/a/span[1]').text
+            
+            genres = info_box[0].find_element(By.XPATH, '//*[@id="downloadfrm"]/div/div/div[2]/div[2]/dl/dd[3]').text
+
+            likes = info_box[0].find_element(By.ID, 'd_like_count').text
+
+            lyrics = info_box[0].find_element(By.CLASS_NAME, 'lyric').text.replace("\n",' ')
+
+        # elif i >= 50 or i < 100:
+
+        #     song_info = rows_100[i-50].find_element(By.CLASS_NAME, 'btn.button_icons.type03.song_info')
+
+        #     ActionChains(driver).click(song_info).perform()
+
+        #     info_box = driver.find_elements(By.ID, 'conts')
+
+        #     song_name = info_box[0].find_elements(By.CLASS_NAME, 'song_name')
+
+        #     singer_name = info_box[0].find_elements(By.XPATH, '//*[@id="downloadfrm"]/div/div/div[2]/div[1]/div[2]/a/span[1]')
+
+        #     genres = info_box[0].find_elements(By.XPATH, '//*[@id="downloadfrm"]/div/div/div[2]/div[2]/dl/dd[3]')
+
+        #     likes = info_box[0].find_elements(By.ID, 'd_like_count')
+
+        #     lyrics = info_box[0].find_elements(By.CLASS_NAME, 'lyric')
+
+		# all_info 딕셔너리의 알맞는 키에 값들을 넣는다.
+        all_info['Title'].append(song_name)
+        all_info['Singer'].append(singer_name)
+        all_info['Genre'].append(genres)
+        all_info['Like'].append(likes)
+        all_info['Lyric'].append(lyrics)
+        driver.back()
+
+    # 창 닫기
+    driver.quit()
+
+	# 데이터프레임 만들기
+    df_all_info = pd.DataFrame(all_info)
+
+    return df_all_info
+
+  
+
+# 설정값
+url = "https://www.melon.com/index.htm"
+
+melon_song_info(url)
+```
