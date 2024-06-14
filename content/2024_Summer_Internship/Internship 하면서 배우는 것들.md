@@ -1,6 +1,6 @@
 ---
 title: Learning from internship
-date: <%= tp.date.now('2024-06-07') %>
+date:
 ---
 
 # Cloudflare
@@ -12,6 +12,7 @@ date: <%= tp.date.now('2024-06-07') %>
 
 - 형식 문서를 만들어 Template 폴더에 넣고 파일을 만든 뒤 단축키로 template을 지정하여 형식을 쓸 수도 있고 설정을 하여 새로 파일을 만들면 자동으로 그 형식으로 적용된다.
 - Obsidian에서 자동으로 commit을 설정하면 Git에 저장이 되고 다른 원격 컴퓨터에서 Git을 통해 이용가능
+이것은 문단 참조를 하기 위한 예시 문단입니다.^129389 ^f407c7
 
 # jupyter notebook 에서 md로 바꿔주는 방법
 
