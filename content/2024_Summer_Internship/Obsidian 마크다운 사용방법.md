@@ -5,7 +5,9 @@ draft: true
 ---
 # 마크다운 문법 정리
 
-## [Obsidian Help](https://publish.obsidian.md/help-ko/%ED%99%88)
+>[!info] Obsidian Markdown 정리
+> [Obsidian Help](https://publish.obsidian.md/help-ko/%ED%99%88)
+> [Obsidian Markdown Cheatsheet](https://statisticsplaybook.com/obsidian-markdown-cheatsheet/)
 
 ### 1. 제목(Headers)
 - 제목을 만들 때는 `#`을 사용하며, `#`의 개수에 따라 제목의 수준이 달라집니다.

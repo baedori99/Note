@@ -20,6 +20,7 @@ title: Important Things with using OPEN API
 만약 위와 같은 경우나 .gitignore에 등록했는데 커밋목록에 나타났다면
 .gitignore에 파일을 추가하기 전에 stage에 올라간 파일들은 **캐시가 남아 있어** 커밋모록에 뜨는 것이다.
 - 캐시를 제거하기 위해서는 **해당 디렉토리로 이동 후** 명령어를 입력해주면 된다.
+
 ```
 // 캐시를 모두 삭제
 git rm -r --cached .
