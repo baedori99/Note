@@ -1,7 +1,7 @@
 ---
 title: Youtube 댓글 크롤링
 create_date: 2024-06-16 22:06 - 2024-06-16 22:06
-draft: true
+draft: false
 ---
 # Youtube 댓글 크롤링
 

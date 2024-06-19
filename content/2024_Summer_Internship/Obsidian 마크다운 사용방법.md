@@ -370,4 +370,5 @@ ___
 <span style="color: #2D3748; background-color:#fff5b1;"> Strong</span>
 <span style="color: #808080">그레이</span>
 <span style="color: #ffd33d">노랑</span>
+<span style="color: #419DD9">연한파랑</span>
 ```
