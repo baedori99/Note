@@ -360,3 +360,14 @@ ___
 
 > [!bug] bug
 
+---
+### 글자 색상
+
+```
+<span style="color: red">red</span>
+<span style="color: #0000FF">파랑</span>
+<span style="color: #008000">초록</span>
+<span style="color: #2D3748; background-color:#fff5b1;"> Strong</span>
+<span style="color: #808080">그레이</span>
+<span style="color: #ffd33d">노랑</span>
+```

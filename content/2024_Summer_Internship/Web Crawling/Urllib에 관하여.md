@@ -166,3 +166,41 @@ for param in query_string.split('&'):
 
 print(params['q'])
 ```
+
+---
+#### parse_qs()
+출처: [parse_qs에 관한 것](https://dololak.tistory.com/254)
+
+- parse_qs()는 지정된 쿼리스트링을 해석하여 dict()로 반환
+- parse_qs()에는 쿼리스트링 문자열을 지정해 주어야 합니다.
+- url 객체로부터 추출하는 방법
+```python
+from urllib import parse
+
+url = parse.urlparse('http://www.exeam.org?examParam1=value1&examParam2=value2') 
+
+print(parse.parse_qs(url.query))
+
+# 출력값
+# 딕셔너리 return
+{'examParam1': ['value1'], 'examParam2': ['value2']}
+```
+
+- 만약 문자열 literal을 그대로 전달하고 싶은 경우 쿼리스트링 부분의 문자열만 전달
+```python
+from urllib import parse
+
+print(parse.parse_qs('examParam1=value1&examParam2=value2'))
+
+# 출력값
+{'examParam1': ['value1'], 'examParam2': ['value2']}
+```
+
+- 하나의 parameter `name`에 값이 여러 개인 경우
+```python
+from urllib import parse
+print(parse.parse_qs('examParam1=value1&examParam1=value2')) 
+
+# 출력값
+{'examParam1': ['value1', 'value2']}
+```
