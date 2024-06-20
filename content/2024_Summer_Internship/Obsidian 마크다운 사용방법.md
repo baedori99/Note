@@ -372,3 +372,5 @@ ___
 <span style="color: #ffd33d">노랑</span>
 <span style="color: #419DD9">연한파랑</span>
 ```
+
+[색상 코드](https://seo6285.tistory.com/140)
