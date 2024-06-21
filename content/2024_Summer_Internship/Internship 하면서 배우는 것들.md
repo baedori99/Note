@@ -38,3 +38,29 @@ print(str1[num])
 	- 마지막에 .png를 달아준다.
 - Ex)
   ![](https://imgur.com/GYIKo4T.png)
+---
+#  Git  글자 표시
+vs code에서 작업하는 폴더에서 git init을 하고 코딩을 하다보면 폴더와 파일 옆에 색깔있는 점이나 글자가 표시된다  
+
+
+A - Added (This is a new file that has been added to the repository)  
+저장소에 새로 추가된 것들
+
+M - Modified (An existing file has been changed) : 갈색 점 표시  
+수정된 것들
+
+D - Deleted (a file has been deleted)  
+삭제된 것들
+
+U - Untracked (The file is new or has been changed but has not been added to the repository yet) : 녹색 점 표시  
+새로 추가되거나 수정된 것들인데 아직 git add 안되서 추적이 안되는 상태
+
+C - Conflict (There is a conflict in the file)
+
+R - Renamed (The file has been renamed)
+
+S - Submodule (In repository exists another subrepository)
+
+빨간 점 : problem decorations를 표시하는것, 해당 폴더나 파일안에 코드 문법이나 다른 오류가 있다는 의미
+
+git commit이 정상적으로 되면 이러한 표시들이 사라진다.
