@@ -2,6 +2,9 @@
 title: Korean Data Preprocessing (knolpy)
 create_date: 2024-06-17 17:06 - 2024-06-17 17:06
 draft: false
+tags:
+  - "#WebCrawling"
+  - "#Pandas"
 ---
 # Korean Data Preprocessing
 

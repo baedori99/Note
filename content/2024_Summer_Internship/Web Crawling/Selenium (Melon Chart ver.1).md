@@ -1,6 +1,9 @@
 ---
 title: Selenium_Crawling_practice1
 create_date: 2024-06-12 12:06 - 2024-06-12 12:06
+tags:
+  - "#WebCrawling"
+  - "#Pandas"
 ---
 # Selenium Crawling Melon Chart Hot 100
 

@@ -1,5 +1,7 @@
 ---
 title: Important Things with using OPEN API
+tags:
+  - "#WebCrawling"
 ---
 [[Urllib에 관하여]]
 

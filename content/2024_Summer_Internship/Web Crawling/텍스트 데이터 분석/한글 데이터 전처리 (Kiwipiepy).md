@@ -2,6 +2,9 @@
 title: Korean Data Preprocessing (Kiwipiepy)
 create_date: 2024-06-18 10:06 - 2024-06-18 10:06
 draft: false
+tags:
+  - "#WebCrawling"
+  - "#Pandas"
 ---
 # Kiwipiepy
 

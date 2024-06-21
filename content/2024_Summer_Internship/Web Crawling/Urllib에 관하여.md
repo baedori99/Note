@@ -2,6 +2,8 @@
 title: Urllib Module
 create_date: 2024-06-04 14:06 - 2024-06-04 14:06
 description: 네이버 API를 통해 파이썬으로 뉴스 기사를 불러오는 코드를 공부하는 중에 urllib모듈에 관하여 궁금하여 공부하고자 정리해봄!!!
+tags:
+  - "#WebCrawling"
 ---
 ![](https://imgur.com/INp5Ud8.png)
 [Python모듈 | urllib 모듈에 대한 출처](https://ctkim.tistory.com/entry/%ED%8C%8C%EC%9D%B4%EC%8D%AC-urllib-%EB%AA%A8%EB%93%88)
