@@ -376,3 +376,4 @@ ___
 [색상 코드](https://seo6285.tistory.com/140)
 
 ---
+[옵시디언 테마](https://alive-wong.tistory.com/66?category=1101973)
