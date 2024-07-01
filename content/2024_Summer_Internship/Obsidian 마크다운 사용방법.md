@@ -1,7 +1,7 @@
 ---
 title: Obsidian Markdown 사용방법
 create_date: 2024-06-14 16:06 - 2024-06-14 16:06
-draft: true
+draft: false
 ---
 # 마크다운 문법 정리
 
