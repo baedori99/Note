@@ -6,14 +6,14 @@ tags:
   - "#AI"
 ---
 >[!reference] 참고자료
->[Langchain 위키독스](https://wikidocs.net/book/14473)
->[Python Langchain Documentation](https://python.langchain.com/v0.1/docs/get_started/quickstart/)
->[LangChain정의 관련 블로그](https://www.magicaiprompts.com/docs/langchain/what-is-langchain-innovative-framework-for-llm/)
->[LangChain모듈 관련 블로그](https://m.post.naver.com/viewer/postView.naver?volumeNo=37460860&memberNo=36733075)
->[LangChain 관련 IDG Article](https://www.ciokorea.com/column/305341#csidx973f1264e8a2e758d10e50c3f1541b5)
->[SDK와 API의 차이점](https://doozi0316.tistory.com/entry/SDK-API%EC%9D%98-%EA%B0%9C%EB%85%90%EA%B3%BC-%EC%B0%A8%EC%9D%B4%EC%A0%90)
->[데이터 파이프라인(ETL과 ELT)](https://seaforest76.tistory.com/27)
->[상태 저장형 과 비저장형](https://change-words.tistory.com/entry/stateful-stateless)
+>[Langchain 위키독스](https://wikidocs.net/book/14473)  
+>[Python Langchain Documentation](https://python.langchain.com/v0.1/docs/get_started/quickstart/)  
+>[LangChain정의 관련 블로그](https://www.magicaiprompts.com/docs/langchain/what-is-langchain-innovative-framework-for-llm/)  
+>[LangChain모듈 관련 블로그](https://m.post.naver.com/viewer/postView.naver?volumeNo=37460860&memberNo=36733075)  
+>[LangChain 관련 IDG Article](https://www.ciokorea.com/column/305341#csidx973f1264e8a2e758d10e50c3f1541b5)  
+>[SDK와 API의 차이점](https://doozi0316.tistory.com/entry/SDK-API%EC%9D%98-%EA%B0%9C%EB%85%90%EA%B3%BC-%EC%B0%A8%EC%9D%B4%EC%A0%90)  
+>[데이터 파이프라인(ETL과 ELT)](https://seaforest76.tistory.com/27)  
+>[상태 저장형 과 비저장형](https://change-words.tistory.com/entry/stateful-stateless)  
 
 ## LangChain이란?
 
@@ -656,3 +656,148 @@ print(response.content)
 # 출력값
 네, 테디님이세요. 어떻게 도와드릴까요?
 ```
+
+---
+## LCEL(LangChain Expression Language)
+
+>[!reference] 참고 자료
+>[연구원님 LLM 연구노트](https://ppsystem.netlify.app/02-Python/1\)\-Langchain/Langchain-LCEL#-runnablelambda)  
+>[LangChain 공식 문서](https://python.langchain.com/v0.1/docs/expression_language/interface/#input-schema)  
+>[랭체인LangChain 노트](https://wikidocs.net/233781)  
+
+LCEL(LangChain Expression Language)은 프롬프트 구성, 모델 인스턴스 생성, 출력 생성의 과정을 **==Chain==** 으로 묶어 복잡한 워크플로우를 쉽고 직관적으로 구축할 수 있도록 돕는 인터페이스이다.
+
+특수문자(`|`)를 활용하여 본인만의 Chain을 구축할 수 있다.
+
+### 1. Methods
+
+| Sync/Async         | Description              |
+| ------------------ | ------------------------ |
+| `invoke`/`ainvoke` | 입력에 대한 결과를 출력한다.         |
+| `batch`/`abatch`   | 반복되는 입력을 리스트로 입력하여 처리한다. |
+| `stream`/`astream` | chunk마다 출력되게 한다.         |
+| `astream_log`      | 중간 단계를 스트리밍한다.           |
+
+```python
+# 기본 코드
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+prompt = PromptTemplate.from_template("{input}에 대해 한국어로 한 줄로 설명해줘")
+model = ChatOpenAI(model_name = "gpt-3.5-turbo")
+output_parser = StrOutputParser()
+chain = prompt | model | output_parser
+```
+
+#### `invoke`/ `ainvoke`
+
+```python
+import time 
+import asyncio
+ 
+def run_sync(input_list):
+    """invoke 실행 함수"""
+    start_time = time.time()
+    for input in input_list:
+        result = chain.invoke(input)
+        print(result)
+    end_time = time.time()
+    print("="*100)
+    print(f"Sync execution time: {end_time - start_time:.2f} seconds")
+ 
+async def run_async(input_list):
+    """ainvoke 실행 함수"""
+    start_time = time.time()
+    tasks = [chain.ainvoke(input) for input in input_list]
+    results = await asyncio.gather(*tasks)
+    end_time = time.time()
+    print(f"Async execution time: {end_time - start_time:.2f} seconds")
+    print("="*100)
+ 
+    for result in results:
+        print(result)
+ 
+run_sync(input_list)
+await run_async(input_list)
+```
+
+```
+# 출력값
+# Sync execution time: 7.13 seconds
+# Async execution time: 1.58 seconds
+```
+
+#### `batch` / `abatch`
+`batch`와 `abatch`의 속도 차이가 크게 나지 않는 것처럼 보이지만, 보다 더 복잡한 코드에서는 차이가 날 것이다.
+
+```python
+import time
+import asyncio
+ 
+def run_sync(input_list):
+    """batch 실행 함수"""
+    start_time = time.time()
+    result = chain.batch(input_list)
+    end_time = time.time()
+    print(f"Sync execution time: {end_time - start_time:.2f} seconds")
+    print("="*100)
+    print("\n".join(result))
+ 
+async def run_async():
+    """abatch 실행 함수"""
+    start_time = time.time()
+    tasks = chain.abatch(input_list)
+    result = await tasks
+    end_time = time.time()
+    print(f"Async execution time: {end_time - start_time:.2f} seconds")
+    print("="*100)
+    print("\n".join(result))
+ 
+run_sync(input_list)
+await run_async(input_list)
+```
+
+```
+# 출력값
+# Sync execution time: 1.78 seconds
+# Async execution time: 1.65 seconds
+```
+
+#### `stream` / `astream`
+
+generator로 출력되어 `for`문으로 `print`하면 chunk별로 `streaming`된다.
+
+```python
+# generator로 출력되는 것을 확인
+chain.stream({"input":"파이썬"}) 
+ 
+# 출력값
+# <generator object RunnableSequence.stream at 0x0000014E37FB6650>
+```
+
+```python
+# stream
+for chunk in chain.stream({"input":"파이썬"}):
+    print(chunk, end="", flush=True)
+ 
+# astream
+for chunk in chain.stream({"input":"파이썬"}):
+    print(chunk, end="", flush=True)
+```
+
+#### `stream_log`
+
+chain 실행과정을 로깅하는 함수로 디버깅할때 용이하다.
+
+```python
+stream = chain.astream_log({"input":"파이썬"})
+async for chunk in stream:
+    print(chunk)
+    print("="*100)
+```
+
+
+
+
+
