@@ -326,3 +326,333 @@ chain = prompt | llm
 	- 이때, `template` 변수에 정의된 템플릿 문자열이 사용된다.
 - chain은 정의된 프롬프트 템플릿을 LLM과 연결하여 입력프롬프트를 생성하고 결과를 얻는 일련의 작업을 수행한다.
 	- `|`연산자는 파이프 연산자로, 프롬프트를 LLM에 입력하고 그 결과를 얻는 과정을 나타낸다.
+
+### 프롬프트 템플릿 활용
+
+>[!reference]
+>[랭체인LangChain 노트](https://wikidocs.net/233795)
+
+#### LLMChain 객체
+
+- LLMChain은 특정 PromptTemplate와 연결된 체인 객체를 생성한다.
+- 사용법
+	- `chain = prompt | llm`
+##### 스트리밍(Streaming)
+
+- 대규모 데이터를 한 번에 전송하는 대신, 일정한 속도로  연속적으로 전송하여 처리하는 방식
+- 토큰별(글자 하나씩) 출력한다는 뜻
+- 스트리밍 옵션은 질의에 대한 답변을 실시간으로 받을 때 유용하다.
+- 장점
+	1. 실시간 데이터 처리: 데이터를 수신하자마자 즉시 처리할 수 있어 빠른 반응이 요구되는 애플리케인션에 적합하다.
+	2. 리소스 효율성: 대규모 데이터를 한 번에 처리하지 않고 나누어 처리하기 때문에 메모리와 CPU 리소스를 효율적으로 사용할 수 있다.
+	3. 연속적 분석: 지속적으로 들어오는 데이터를 분석할 수 있어, 실시간 모니터링 및 대응이 가능하다.
+
+---
+## Memory
+
+>[!reference]
+>[랭체인LangChain 노트 메모리(Memory)](https://wikidocs.net/233773)
+
+### 1. 대화 버퍼 메모리 (ConversationBufferMemory)
+
+- 이 메모리는 메시지를 저장한 다음 변수에 메시지를 추출할 수 있게 한다.
+#### 예제
+
+```python
+from langchain.memory import ConversationBufferMemory
+```
+
+```python
+memory = ConversationBufferMemory()
+memory.save_context(
+    inputs={
+        "human": "안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?"
+    },
+    outputs={
+        "ai": "안녕하세요! 계좌 개설을 원하신다니 기쁩니다. 먼저, 본인 인증을 위해 신분증을 준비해 주시겠어요?"
+    },
+)
+```
+
+- memory의 `load_memory_variables({})` 함수는 메시지 히스토리를 반환한다.
+- 
+```python
+# 'history' 키에 저장된 대화 기록을 확인합니다.
+memory.load_memory_variables({})
+```
+
+```
+# 출력값
+{'history': 'Human: 안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?\nAI: 안녕하세요! 계좌 개설을 원하신다니 기쁩니다. 먼저, 본인 인증을 위해 신분증을 준비해 주시겠어요?'}
+```
+
+- `save_context(inputs, outputs)` 메서드를 사용하여 대화 기록을 저장할 수 있다.
+	- 이 메서드는 `inputs`와 `outputs` 두 개의 인자를 받는다.
+	- `inputs`은 사용자의 입력을, `outputs` 는 AI의 출력을 저장한다.
+	- 이 메서드를 사용하면 대화 기록이 `history` 키에 저장된다.
+	- 이후 `load_memory_variables` 메서드를 사용하여 저장된 대화 기록을 확인할 수 있다.
+
+```python
+# inputs: dictionary(key: "human" or "ai", value: 질문)
+# outputs: dictionary(key: "ai" or "human", value: 답변)
+memory.save_context(
+    inputs={"human": "네, 신분증을 준비했습니다. 이제 무엇을 해야 하나요?"},
+    outputs={
+        "ai": "감사합니다. 신분증 앞뒤를 명확하게 촬영하여 업로드해 주세요. 이후 본인 인증 절차를 진행하겠습니다."
+    },
+)
+```
+
+```python
+# 2개의 대화를 저장합니다.
+memory.save_context(
+    inputs={"human": "사진을 업로드했습니다. 본인 인증은 어떻게 진행되나요?"},
+    outputs={
+        "ai": "업로드해 주신 사진을 확인했습니다. 이제 휴대폰을 통한 본인 인증을 진행해 주세요. 문자로 발송된 인증번호를 입력해 주시면 됩니다."
+    },
+)
+memory.save_context(
+    inputs={"human": "인증번호를 입력했습니다. 계좌 개설은 이제 어떻게 하나요?"},
+    outputs={
+        "ai": "본인 인증이 완료되었습니다. 이제 원하시는 계좌 종류를 선택하고 필요한 정보를 입력해 주세요. 예금 종류, 통화 종류 등을 선택할 수 있습니다."
+    },
+)
+```
+
+```python
+# history에 저장된 대화 기록을 확인합니다.
+print(memory.load_memory_variables({})["history"])
+```
+
+```
+# 출력값
+Human: 안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?
+AI: 안녕하세요! 계좌 개설을 원하신다니 기쁩니다. 먼저, 본인 인증을 위해 신분증을 준비해 주시겠어요?
+Human: 사진을 업로드했습니다. 본인 인증은 어떻게 진행되나요?
+AI: 업로드해 주신 사진을 확인했습니다. 이제 휴대폰을 통한 본인 인증을 진행해 주세요. 문자로 발송된 인증번호를 입력해 주시면 됩니다.
+Human: 인증번호를 입력했습니다. 계좌 개설은 이제 어떻게 하나요?
+AI: 본인 인증이 완료되었습니다. 이제 원하시는 계좌 종류를 선택하고 필요한 정보를 입력해 주세요. 예금 종류, 통화 종류 등을 선택할 수 있습니다.
+```
+
+```python
+# 추가로 2개의 대화를 저장합니다.
+memory.save_context(
+    inputs={"human": "정보를 모두 입력했습니다. 다음 단계는 무엇인가요?"},
+    outputs={
+        "ai": "입력해 주신 정보를 확인했습니다. 계좌 개설 절차가 거의 끝났습니다. 마지막으로 이용 약관에 동의해 주시고, 계좌 개설을 최종 확인해 주세요."
+    },
+)
+memory.save_context(
+    inputs={"human": "모든 절차를 완료했습니다. 계좌가 개설된 건가요?"},
+    outputs={
+        "ai": "네, 계좌 개설이 완료되었습니다. 고객님의 계좌 번호와 관련 정보는 등록하신 이메일로 발송되었습니다. 추가적인 도움이 필요하시면 언제든지 문의해 주세요. 감사합니다!"
+    },
+)
+```
+
+```python
+# history에 저장된 대화 기록을 확인합니다.
+print(memory.load_memory_variables({})["history"])
+```
+
+```
+# 출력값
+Human: 안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?
+AI: 안녕하세요! 계좌 개설을 원하신다니 기쁩니다. 먼저, 본인 인증을 위해 신분증을 준비해 주시겠어요?
+Human: 사진을 업로드했습니다. 본인 인증은 어떻게 진행되나요?
+AI: 업로드해 주신 사진을 확인했습니다. 이제 휴대폰을 통한 본인 인증을 진행해 주세요. 문자로 발송된 인증번호를 입력해 주시면 됩니다.
+Human: 인증번호를 입력했습니다. 계좌 개설은 이제 어떻게 하나요?
+AI: 본인 인증이 완료되었습니다. 이제 원하시는 계좌 종류를 선택하고 필요한 정보를 입력해 주세요. 예금 종류, 통화 종류 등을 선택할 수 있습니다.
+Human: 정보를 모두 입력했습니다. 다음 단계는 무엇인가요?
+AI: 입력해 주신 정보를 확인했습니다. 계좌 개설 절차가 거의 끝났습니다. 마지막으로 이용 약관에 동의해 주시고, 계좌 개설을 최종 확인해 주세요.
+Human: 모든 절차를 완료했습니다. 계좌가 개설된 건가요?
+AI: 네, 계좌 개설이 완료되었습니다. 고객님의 계좌 번호와 관련 정보는 등록하신 이메일로 발송되었습니다. 추가적인 도움이 필요하시면 언제든지 문의해 주세요. 감사합니다!
+```
+
+- `return_messages=True` 로 설정하면 `HumanMessage`와 `AIMessage` 객체를 반환한다.
+
+```python
+memory = ConversationBufferMemory(return_messages=True)
+
+memory.save_context(
+    inputs={
+        "human": "안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?"
+    },
+    outputs={
+        "ai": "안녕하세요! 계좌 개설을 원하신다니 기쁩니다. 먼저, 본인 인증을 위해 신분증을 준비해 주시겠어요?"
+    },
+)
+
+memory.save_context(
+    inputs={"human": "네, 신분증을 준비했습니다. 이제 무엇을 해야 하나요?"},
+    outputs={
+        "ai": "감사합니다. 신분증 앞뒤를 명확하게 촬영하여 업로드해 주세요. 이후 본인 인증 절차를 진행하겠습니다."
+    },
+)
+
+memory.save_context(
+    inputs={"human": "사진을 업로드했습니다. 본인 인증은 어떻게 진행되나요?"},
+    outputs={
+        "ai": "업로드해 주신 사진을 확인했습니다. 이제 휴대폰을 통한 본인 인증을 진행해 주세요. 문자로 발송된 인증번호를 입력해 주시면 됩니다."
+    },
+)
+```
+
+```python
+# history에 저장된 대화 기록을 확인합니다.
+memory.load_memory_variables({})["history"]
+```
+
+```
+# 출력값
+[HumanMessage(content='안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?'), AIMessage(content='안녕하세요! 계좌 개설을 원하신다니 기쁩니다. 먼저, 본인 인증을 위해 신분증을 준비해 주시겠어요?'), HumanMessage(content='네, 신분증을 준비했습니다. 이제 무엇을 해야 하나요?'), AIMessage(content='감사합니다. 신분증 앞뒤를 명확하게 촬영하여 업로드해 주세요. 이후 본인 인증 절차를 진행하겠습니다.'), HumanMessage(content='사진을 업로드했습니다. 본인 인증은 어떻게 진행되나요?'), AIMessage(content='업로드해 주신 사진을 확인했습니다. 이제 휴대폰을 통한 본인 인증을 진행해 주세요. 문자로 발송된 인증번호를 입력해 주시면 됩니다.')]
+```
+
+#####  Chain에 적용
+```python
+from langchain_openai import ChatOpenAI
+from langchain.chains import ConversationChain
+
+# LLM 모델을 생성합니다.
+llm = ChatOpenAI(temperature=0)
+# ConversationChain을 생성합니다.
+conversation = ConversationChain(
+    # ConversationBufferMemory를 사용합니다.
+    llm=llm,
+    memory=ConversationBufferMemory(),
+)
+```
+
+- `ConversationChain`을 사용하여 대화를 진행한다.
+
+```python
+# 대화를 시작합니다.
+response = conversation.predict(
+    input="안녕하세요, 비대면으로 은행 계좌를 개설하고 싶습니다. 어떻게 시작해야 하나요?"
+)
+print(response)
+```
+
+```
+# 출력값
+안녕하세요! 은행 계좌를 개설하려면 먼저 해당 은행의 공식 웹사이트에 접속하셔서 온라인 개설 절차를 따라야 합니다. 보통 개인 정보, 신분증 사본, 주소증명서 등의 문서를 제출해야 하며, 온라인 양식을 작성하고 전자 서명을 해야 합니다. 그 후에 은행에서 제공하는 안내에 따라 추가 단계를 진행하시면 됩니다. 혹시 어떤 은행을 고려하고 계신가요?
+```
+
+- 이전의 대화 기록을 기억하고 있는지 확인한다.
+```python
+# 이전 대화내용을 불렛포인트로 정리해 달라는 요청을 보냅니다.
+response = conversation.predict(
+    input="이전 답변을 불렛포인트 형식으로 정리하여 알려주세요."
+)
+print(response)
+```
+
+```
+# 출력값
+1. 해당 은행의 공식 웹사이트에 접속
+2. 온라인 개설 절차 따르기
+3. 개인 정보, 신분증 사본, 주소증명서 등 제출
+4. 온라인 양식 작성 및 전자 서명
+5. 은행 안내에 따라 추가 단계 진행
+```
+
+### LCEL (대화내용 기억하기): 메모리 추가
+
+- 임의의 체인에 메모리를 추가하는 방법을 보여준다. 현재 메모리 클래스를 사용할 수 있지만 수동으로 연결 해야한다.
+
+```python
+from operator import itemgetter
+from langchain.memory import ConversationBufferMemory
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+from langchain_openai import ChatOpenAI
+
+# ChatOpenAI 모델을 초기화합니다.
+model = ChatOpenAI()
+# 대화형 프롬프트를 생성합니다. 이 프롬프트는 시스템 메시지, 이전 대화 내역, 그리고 사용자 입력을 포함합니다.
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", "You are a helpful chatbot"),
+        MessagesPlaceholder(variable_name="chat_history"),
+        ("human", "{input}"),
+    ]
+)
+```
+
+- 대화내용을 저장할 메모리인 `ConversationBufferMemory` 생성하고 `return_messages` 매개변수를 `True`로 설정하여, 생성된 인스턴스가 메시지를 반환하도록 한다.
+- `memory_key` 설정: 추후 Chain의 `prompt` 안에 대입될 key다. 변경하여 사용 가능하다.
+
+```python
+# 대화 버퍼 메모리를 생성하고, 메시지 반환 기능을 활성화합니다.
+memory = ConversationBufferMemory(
+    return_messages=True, memory_key="chat_history")
+```
+
+- `RunnablePassthrough.assign`을 사용하여 `chat_history`변수에 `memory.load_memory_variables`함수의 결과를 할당하고, 이 결과에서 `chat_history` 키에 해당하는 값을 추출한다.
+
+```python
+runnable = RunnablePassthrough.assign(
+    chat_history=RunnableLambda(memory.load_memory_variables)
+    | itemgetter("chat_history")  # memory_key 와 동일하게 입력합니다.
+)
+```
+
+- `runnable` 에 첫 번째 대화를 시작한다.
+	- `input` : 사용자 입력 대화가 전달된다.
+	- `chat_history`: 대화 기록이 전달된다.
+
+```python
+runnable.invoke({"input": "hi!"})
+```
+
+```
+# 출력값
+{'input': 'hi!', 'chat_history': []}
+```
+
+```python
+chain = runnable | prompt | model
+```
+
+첫 번째 대화를 진행한다.
+
+```python
+# chain 객체의 invoke 메서드를 사용하여 입력에 대한 응답을 생성합니다.
+response = chain.invoke({"input": "만나서 반갑습니다. 제 이름은 테디입니다."})
+print(response)  # 생성된 응답을 출력합니다.
+```
+
+```
+content='만나서 반가워요, 테디님! 무엇을 도와드릴까요?' response_metadata={'finish_reason': 'stop', 'logprobs': None}
+```
+
+- `memory.save_context` 함수는 입력 데이터(`inputs`)와 응답 내용(`response.content`)을 메모리에 저장하는 역할
+- 이는 AI 모델의 학습 과정에서 현재 상태를 기록하거나, 사용자의 요청과 시스템의 응답을 추적하는데 사용될 수 있다.
+
+```python
+# 입력된 데이터와 응답 내용을 메모리에 저장합니다.
+memory.save_context(
+    {"inputs": "만나서 반갑습니다. 제 이름은 테디입니다."}, {"output": response.content}
+)
+# 저장된 대화기록을 출력합니다.
+memory.load_memory_variables({})
+```
+
+```
+# 출력값
+{'chat_history': [HumanMessage(content='만나서 반갑습니다. 제 이름은 테디입니다.'),  AIMessage(content='만나서 반가워요, 테디님! 무엇을 도와드릴까요?')]}
+```
+
+이름을 기억하고 있는지 추가 질의한다.
+
+```python
+# 이름을 기억하고 있는지 추가 질의합니다.
+response = chain.invoke({"input": "제 이름이 무엇이었는지 기억하세요?"})
+# 답변을 출력합니다.
+print(response.content)
+```
+
+```
+# 출력값
+네, 테디님이세요. 어떻게 도와드릴까요?
+```

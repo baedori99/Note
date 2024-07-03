@@ -117,7 +117,7 @@ answer = model.invoke(question).content
 ![](https://imgur.com/OAFPPYz.jpg)
 
 ---
-### 4. LLM 연결하기 + Template prompt 사용
+#### 1. LLM 연결하기 + Template prompt 사용
 
 Template를 작성하여 MBTI의 특징에 대해서 알려주는 챗봇을 만들어보려고 한다.
 
@@ -145,7 +145,7 @@ answer = chain.invoke({"input": question})
 -  `StrOutputParser()` :  출력값을 기본 `str`형태로 받는다.
 
 ---
-### 최종 코드
+##### 최종 코드
 
 ![](https://imgur.com/Rhrhg3s.jpg)
 
@@ -216,4 +216,72 @@ if question:
     st.session_state[session_key].append(
         {"role": "assistant", "content": answer}
     )
+```
+
+---
+#### 2. 스트리밍 기능을 추가
+
+>[!reference] 스트리밍관련 출처
+>[[LangChain#스트리밍(Streaming)|스트리밍에 관한 노트]]
+>[Callback 관련 LangChain 공식 문서](https://python.langchain.com/v0.1/docs/modules/callbacks/)
+>[[과제 공부용#Callback 함수|Callback함수에 관한 노트]]
+
+- `class BaseCallbackHandler:`
+	- LangChain에서 Callback 함수들을 쓸 수 있게 하는 클래스 
+- `def on_llm_new_token(self, token: str, **kwargs: Any) -> Any:`
+	- 본문: "Run on new LLM token. Only available when streaming is enabled."
+	- 오직 스트리밍 기능이 가능한 경우, 새로운 LLM Token으로 실행한다.
+
+```python
+from dotenv import load_dotenv
+load_dotenv()
+
+from langchain_openai import ChatOpenAI
+from langchain_core.callbacks import BaseCallbackHandler
+
+class CustomHandler(BaseCallbackHandler):
+	def __init__(self, container):
+		self.container = container
+		self.text = ""
+	def on_llm_new_token(self, token: str, **kwargs) -> None:
+		self.text += token # 토큰 하나씩 추가
+		self.container.markdown(self.text) # 하나씩 추가된 토큰 출력
+
+model = ChatOpenAI(model_name="gpt-3.5-turbo",streaming = True) # 스트리밍기능 가능
+container = st.empty()
+model.callbacks = [CustomHandler(container)]
+answer = model.invoke(question).content
+```
+
+---
+#### 3. 메모리 기능을 추가
+
+>[!reference] 메모리 관련 출처
+>[[LangChain#Memory|Memory  관련 노트]]
+
+```python
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_openai import ChatOpenAI
+from langchain_core.output_parsers import StrOutputParser
+from operator import itemgetter
+from langchain.memory import ConversationBufferMemory
+from langchain_core.runnables import RunnableLambda, RunnablePassthrough
+
+memory = ConversationBufferMemory(return_messages=True, memory_key="chat_history")
+runnable = RunnablePassthrough.assign(
+		chat_history = RunnableLambda(memory.load_memory_variables)
+		| itemgetter("chat_history")
+)
+prompt = ChatPromptTemplate.from_messages(
+	[
+		("system", template),
+		MessagesPlaceholder(variable_name="chat_history"),
+		("human", "{input}")
+	]
+)
+model = ChatOpenAI(model_name = "gpt-3.5-turbo", streaming = True)
+chain = runnable | prompt | model | StrOutputParser()
+
+# 저장되는지 확인
+print(memory.load_memory_variables({}))
 ```
