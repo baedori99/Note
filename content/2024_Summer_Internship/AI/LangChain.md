@@ -663,7 +663,8 @@ print(response.content)
 >[!reference] 참고 자료
 >[연구원님 LLM 연구노트](https://ppsystem.netlify.app/02-Python/1\)\-Langchain/Langchain-LCEL#-runnablelambda)  
 >[LangChain 공식 문서](https://python.langchain.com/v0.1/docs/expression_language/interface/#input-schema)  
->[랭체인LangChain 노트](https://wikidocs.net/233781)  
+>[랭체인LangChain 노트](https://wikidocs.net/233781) 
+>[langchain LCEL과 Runnable](https://rudaks.tistory.com/entry/langchain-LCEL%EA%B3%BC-Runnable?category=1137402) 
 
 LCEL(LangChain Expression Language)은 프롬프트 구성, 모델 인스턴스 생성, 출력 생성의 과정을 **==Chain==** 으로 묶어 복잡한 워크플로우를 쉽고 직관적으로 구축할 수 있도록 돕는 인터페이스이다.
 
@@ -798,6 +799,149 @@ async for chunk in stream:
 ```
 
 
+>[!example]- 코드 결과
+>```
+> >> RunLogPatch({'op': 'replace', 'path': '', 'value': {'final_output': None, 'id': '7e312a61-7190-46b7-8f04-c88ab333f58d', 'logs': {}, 'name': 'RunnableSequence', 'streamed_output': [], 'type': 'chain'}}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/PromptTemplate', 'value': {'end_time': None, 'final_output': None, 'id': 'aec36f3d-a8ea-4b51-8c74-e0ab0d56b3b6', 'metadata': {}, 'name': 'PromptTemplate', 'start_time': '2024-06-27T01:56:14.017+00:00', 'streamed_output': [], 'streamed_output_str': [], 'tags': ['seq:step:1'], 'type': 'prompt'}}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/PromptTemplate/final_output', 'value': StringPromptValue(text='파이썬에 대해 한국어로 한 줄로 설명해줘')}, {'op': 'add', 'path': '/logs/PromptTemplate/end_time', 'value': '2024-06-27T01:56:14.023+00:00'}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/ChatOpenAI', 'value': {'end_time': None, 'final_output': None, 'id': 'b0736693-8368-4871-8021-62c6c0f3255f', 'metadata': {}, 'name': 'ChatOpenAI', 'start_time': '2024-06-27T01:56:14.030+00:00', 'streamed_output': [], 'streamed_output_str': [], 'tags': ['seq:step:2'], 'type': 'llm'}}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/ChatOpenAI/streamed_output_str/-', 'value': ''}, {'op': 'add', 'path': '/logs/ChatOpenAI/streamed_output/-', 'value': AIMessageChunk(content='', id='run-b0736693-8368-4871-8021-62c6c0f3255f')}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/StrOutputParser', 'value': {'end_time': None, 'final_output': None, 'id': '202ac825-a78c-47c7-bf02-bbe3e8e3b798', 'metadata': {}, 'name': 'StrOutputParser', 'start_time': '2024-06-27T01:56:14.866+00:00', 'streamed_output': [], 'streamed_output_str': [], 'tags': ['seq:step:3'], 'type': 'parser'}}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/StrOutputParser/streamed_output/-', 'value': ''}) ================================================== RunLogPatch({'op': 'add', 'path': '/streamed_output/-', 'value': ''}, {'op': 'replace', 'path': '/final_output', 'value': ''}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/ChatOpenAI/streamed_output_str/-', 'value': '파'}, {'op': 'add', 'path': '/logs/ChatOpenAI/streamed_output/-', 'value': AIMessageChunk(content='파', id='run-b0736693-8368-4871-8021-62c6c0f3255f')}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/StrOutputParser/streamed_output/-', 'value': '파'}) ================================================== RunLogPatch({'op': 'add', 'path': '/streamed_output/-', 'value': '파'}, {'op': 'replace', 'path': '/final_output', 'value': '파'}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/ChatOpenAI/streamed_output_str/-', 'value': '이'}, {'op': 'add', 'path': '/logs/ChatOpenAI/streamed_output/-', 'value': AIMessageChunk(content='이', id='run-b0736693-8368-4871-8021-62c6c0f3255f')}) ================================================== RunLogPatch({'op': 'add', 'path': '/logs/StrOutputParser/streamed_output/-', 'value': '이'}) ================================================== RunLogPatch({'op': 'add', 'path': '/streamed_output/-', 'value': '이'}, {'op': 'replace', 'path': '/final_output', 'value': '파이'}) ================================================== 
+>```
 
 
+### Runnable
 
+입력값들에 대한 변형이 필요한 경우 유연하게 커스텀할 수 있는 도구들이다.
+커스텀 체인을 쉽게 만들기 위해 `Runnable` 프로토콜을 사용한다.
+`chat models`,`LLM`,`outputparser`,`retriever`,`prompt template`등을 포함한 많은 `langchain`컴포넌트가 `Runnable`프로토콜을 사용한다.
+
+이는 표준적인 방식으로 실행할 수 있고 커스텀 체인도 쉽게 만들 수 있는 인터페이스이다.
+
+표준 인터페이스는 다음을 포함한다.
+
+- stream: 응답 청크를 스트림으로 출력
+- invoke: 입력을 받아 체인을 호출
+- batch: 입력 목록으로 체인을 호출
+
+| Function                       | Description                  |
+| ------------------------------ | ---------------------------- |
+| `RunnablePassthrough()`        | 입력된 값을 그대로 전달한다.             |
+| `RunnablePassthrough.assign()` | 입력된 값을 변환하거나 새로운 변수를 만든다.    |
+| `RunnableLambda()`             | 입력된 값을 이요해서 함수로 새로운 변수를 만든다. |
+| `RunnableParallel()`           | 동일한 입력을 가진 chain을 병렬로 처리한다.  |
+
+```python
+# 기본 코드
+from langchain_openai import ChatOpenAI 
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+ 
+prompt = PromptTemplate.from_template("'{input}'을 영어로 번역해주세요")
+model = ChatOpenAI(model_name = "gpt-3.5-turbo") 
+output_parser = StrOutputParser()
+```
+
+#### `RunnablePassthrough()`
+
+입력된 값을 그대로 전달한다. / 데이터를 전달하는 역할
+
+데이터를 변경하지 않고 파이프라인의 다음 단계로 전달하는 데 사용될 수 있다.
+
+`RunnablePassthrough`는 다음과 같은 시나리오에서 유용할 수 있다.
+- 데이터를 변환하거나 수정할 필요가 없는 경우
+- 파이프라인의 특정 단계를 건너뛰어야 하는 경우
+- 디버깅 또는 테스트 목적으로 데이터 흐름을 모니터링해야 하는 경우
+
+원래는 딕셔너리로 입력해야 했지만, 문자열로 입력 받아 `runnable`에서 딕셔너리를 만든 후 프롬프트에 전달 할 수 있다.
+
+```python
+runnable = {"input": RunnablePassthrough()}
+chain = runnable | prompt | model | output_parser 
+chain.invoke("다람쥐")
+ 
+# 출력값
+# 'Squirrel'
+```
+
+다른 예제
+```python
+prompt = PromptTemplate.from_template("{num} x 9는?")
+llm = ChatOpenAI()
+
+chain = prompt | llm | StrOutputParser()
+
+response = chain.invoke({"num": 9})
+print(response)
+
+# 출력값
+# 81입니다.
+```
+
+여기서 `invoke`시 `{"num":9}`인 딕셔너리 타입으로 값을 넣었는데 num이 아닌 그냥 9로 입력하려면 `RunnablePassthrough`를 사용하면 된다. 즉, `num`을 `RunnablePassthrough()`로 지정하면 매개변수로 값을 넘길 수 있다는 것이다.
+
+```python
+prompt = PromptTemplate.from_template("{num} x 9는?")
+llm = ChatOpenAI()
+
+# chain = prompt | llm | StrOutputParser()
+chain = {"num": RunnablePassthrough()} | prompt | llm | StrOutputParser()
+
+response = chain.invoke(3)
+print(response)
+
+# 출력값
+# 81입니다.
+```
+
+#### `RunnablePassthrough.assign()`
+
+입력값을 변형하거나 새로운 입력값을 만들 수 있다.
+
+```python
+add_runnable = RunnablePassthrough.assign(input = lambda x: x["input"] + "를 보았습니다")
+add_runnable.invoke({"input": "다람쥐"})
+ 
+# 출력값
+# {'input': '다람쥐를 보았습니다'}
+```
+
+#### `RunnableLambda()`
+
+`RunnableLambda`는 **사용자 정의 함수를 실행**할 수 있는 기능을 제공한다.
+
+이를 통해 개발자는 **자신만의 함수를 정의**하고, 해당 함수를 `RunnableLambda`를 사용하여 실행할 수 있다.
+
+함수를 만들어 입력값을 변형할 수 있다.
+
+```python
+from langchain_core.runnables import RunnableLambda
+ 
+def add_text(input):
+    return "세상에서 가장 작은 " + input
+ 
+runnable = {"input": RunnableLambda(add_text)}
+chain = runnable | prompt | model | output_parser 
+chain.invoke("다람쥐")
+ 
+# 출력값
+# 'The smallest squirrel in the world'
+```
+
+#### `RunnableParallel()`
+
+입력값이 동일한 여러 개의 체인을 병렬적으로 관리할 수 있다.
+
+```python
+prompt1 = PromptTemplate.from_template("{country}의 주요 언어를 알려줘")
+prompt2 = PromptTemplate.from_template("{country}의 대표적인 랜드마크 3개를 알려줘")
+ 
+chain1 = prompt1 | model | output_parser
+chain2 = prompt2 | model | output_parser
+ 
+combined = RunnableParallel(
+    language = chain1,
+    landmarks = chain2
+)
+
+combined.invoke({"country":"한국"})
+ 
+# 출력값
+# {'language': '한국의 주요 언어는 한국어입니다. 한국어는 대부분의 한국 사람들이 사용하는 언어로, 국내에서는 공식 언어로 사용되고 있습니다. 또한, 영어도 많은 사람들이 학습하고 사용하고 있으며, 중국어와 일본어도 일부 지역에서 사용되고 있습니다.',
+#  'landmarks': '1. 남산타워 - 서울의 대표적인 랜드마크로서, 서울 시내와 한강을 한눈에 볼 수 있는 전망대가 유명하다.\n2. 경복궁 - 서울에 위치한 조선 시대의 궁궐로서, 아름다운 전통 한옥 건물과 근정전, 경회루 등을 볼 수 있다.\n3. 부산 타워 - 부산의 랜드마크로서, 부산 시내와 해안도로를 한눈에 볼 수 있는 전망대와 야경이 유명하다.'}
+```
