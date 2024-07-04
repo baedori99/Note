@@ -808,7 +808,9 @@ async for chunk in stream:
 ### Runnable
 
 입력값들에 대한 변형이 필요한 경우 유연하게 커스텀할 수 있는 도구들이다.
+
 커스텀 체인을 쉽게 만들기 위해 `Runnable` 프로토콜을 사용한다.
+
 `chat models`,`LLM`,`outputparser`,`retriever`,`prompt template`등을 포함한 많은 `langchain`컴포넌트가 `Runnable`프로토콜을 사용한다.
 
 이는 표준적인 방식으로 실행할 수 있고 커스텀 체인도 쉽게 만들 수 있는 인터페이스이다.
