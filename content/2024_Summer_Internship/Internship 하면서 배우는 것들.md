@@ -64,3 +64,7 @@ S - Submodule (In repository exists another subrepository)
 빨간 점 : problem decorations를 표시하는것, 해당 폴더나 파일안에 코드 문법이나 다른 오류가 있다는 의미
 
 git commit이 정상적으로 되면 이러한 표시들이 사라진다.
+
+[연구원님 깃허브](https://narae3759.github.io/)
+
+[옵시디언 무료 퍼블리시 방법](https://anpigon.tistory.com/m/449)
