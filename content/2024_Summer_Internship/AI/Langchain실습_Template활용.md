@@ -1,7 +1,7 @@
 ---
 title: LangChain_실습_MultiChain
 create_date: 2024-07-04 16:07 - 2024-07-04 16:07
-draft: true
+draft: false
 ---
 # 각각 Template를 만들어 대상별 긍/부정 분류하기
 
