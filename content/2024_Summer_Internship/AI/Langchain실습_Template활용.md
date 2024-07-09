@@ -77,9 +77,9 @@ await chain.abatch([
 
 >[!example]- 실행 결과
 >```
-[AIMessage(content="{'category': '맛'}: 긍정", response_metadata={'token_usage': {'completion_tokens': 11, 'prompt_tokens': 245, 'total_tokens': 256}, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-b5ad7523-2d9c-4607-9c2d-7d9783ec5e8a-0', usage_metadata={'input_tokens': 245, 'output_tokens': 11, 'total_tokens': 256}),
- AIMessage(content='{"category": "서비스"}: "긍정"', response_metadata={'token_usage': {'completion_tokens': 14, 'prompt_tokens': 248, 'total_tokens': 262}, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-4bbbae6f-f40b-4cc7-a68f-0b25e95fb045-0', usage_metadata={'input_tokens': 248, 'output_tokens': 14, 'total_tokens': 262}),
- AIMessage(content='{\'category\': \'가격\'}: "부정"', response_metadata={'token_usage': {'completion_tokens': 13, 'prompt_tokens': 248, 'total_tokens': 261}, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-19cbffc5-abb4-4356-a2d4-0abe6a6c0fb0-0', usage_metadata={'input_tokens': 248, 'output_tokens': 13, 'total_tokens': 261})]
+>[AIMessage(content="{'category': '맛'}: 긍정", response_metadata={'token_usage': {'completion_tokens': 11, 'prompt_tokens': 245, 'total_tokens': 256}, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-b5ad7523-2d9c-4607-9c2d-7d9783ec5e8a-0', usage_metadata={'input_tokens': 245, 'output_tokens': 11, 'total_tokens': 256}),
+> AIMessage(content='{"category": "서비스"}: "긍정"', response_metadata={'token_usage': {'completion_tokens': 14, 'prompt_tokens': 248, 'total_tokens': 262}, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-4bbbae6f-f40b-4cc7-a68f-0b25e95fb045-0', usage_metadata={'input_tokens': 248, 'output_tokens': 14, 'total_tokens': 262}),
+ >AIMessage(content='{\'category\': \'가격\'}: "부정"', response_metadata={'token_usage': {'completion_tokens': 13, 'prompt_tokens': 248, 'total_tokens': 261}, 'model_name': 'gpt-3.5-turbo', 'system_fingerprint': None, 'finish_reason': 'stop', 'logprobs': None}, id='run-19cbffc5-abb4-4356-a2d4-0abe6a6c0fb0-0', usage_metadata={'input_tokens': 248, 'output_tokens': 13, 'total_tokens': 261})]
 >```
 
 
@@ -146,16 +146,16 @@ for i in range(len(review)):
 
 >[!example]- 실행 결과
 >```
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "-"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{"가격": "긍정"}'}]
-[{'taste': '{\n    "맛": "-"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
-[{'taste': '{\n    "맛": "부정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "부정"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "-"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "-"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
-[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{"가격": "긍정"}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "-"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{"가격": "긍정"}'}]
+>[{'taste': '{\n    "맛": "-"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
+>[{'taste': '{\n    "맛": "부정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "부정"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "-"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "-"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{\n    "가격": "긍정"\n}'}]
+>[{'taste': '{\n    "맛": "긍정"\n}', 'service': '{\n    "서비스": "긍정"\n}', 'price': '{"가격": "긍정"}'}]
 >```
 
 
@@ -196,9 +196,9 @@ combined.invoke({"sentence": review})
 
 >[!example]- 실행 결과
 >```
-{'taste': {'맛반응': '부정'},
- 'service': {'서비스반응': '긍정'},
- 'price': {'음식맛': '긍정', '서비스': '긍정', '가격': '부정', '분위기': '긍정'}}
+>{'taste': {'맛반응': '부정'},
+ >'service': {'서비스반응': '긍정'},
+ >'price': {'음식맛': '긍정', '서비스': '긍정', '가격': '부정', '분위기': '긍정'}}
 >```
 
 - `make_runnable(text)`를 통해 `category`에 `review`를 추가할 수 있다.
