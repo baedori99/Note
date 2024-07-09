@@ -38,7 +38,7 @@ review = temp_review.head(10)
 sentence = temp_review.Review_Text[0] # '직원 분들 너무 친절하시고 음식 맛은 대한민국 호텔 뷔페 넘버 원인데 말해 뭐 해입니다 조금씩 일찍 입장시켜주시는 융통성도 좋아요 쪼금 아쉬운 건 의 외로 과일류 구색이 약하다는 거'
 ```
 ---
-## 1번 실습
+### 1번 실습
 
 ```python
 model = ChatOpenAI(model_name = "gpt-3.5-turbo")
@@ -83,7 +83,7 @@ await chain.abatch([
 >```
 
 
-## 2번 실습
+### 2번 실습
 
 ```python
 model = ChatOpenAI(model_name = "gpt-3.5-turbo")
