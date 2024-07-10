@@ -1,7 +1,7 @@
 ---
 title: Pydantic
 create_date: 2024-07-09 16:07 - 2024-07-09 16:07
-draft: true
+draft: false
 ---
 # Pydantic 라이브러리
 
@@ -17,8 +17,7 @@ Pydantic은 Python Type Hint를 기반으로 데이터 검증 및 구문 분석�
 Pydantic은 validation 라이브러리가 아닌 parsing 라이브러리이다.
 <U>즉, pydantic은 입력 데이터가 아닌 출력 모델의 유형과 제약 조건을 보장한다.</U>
 
-
-
+---
 
 ## 데이터 유효성 검사(Data Validation)
 
@@ -27,12 +26,14 @@ Pydantic은 validation 라이브러리가 아닌 parsing 라이브러리이다.
 
 데이터 유효성 검사는 잘못된 사용자 입력과 같은 문제로 인해 발생하는 예기치 않은 오류를 방지한다.
 
+---
 ## Installation
 
 ```
 pip install pydantic
 ```
 
+---
 ## Models
 
 Models는 `BaseModel`로부터 상속받은 Class로, parsing과 validation을 통해 정의된 필드와 제약을 보장해준다.
@@ -86,6 +87,7 @@ print(m.model_dump())
 	- `foo`: `Foo` 클래스를 의미한다.
 	- `bars`: `Bar` 클래스의 인스턴스 리스트를 의미한다.
 
+---
 ## Fields
 
 ### Default values
@@ -125,6 +127,7 @@ print(user)
 # id='d1be7377eea34d869ca615a8324ea9d3'
 ```
 
+---
 ### Field aliases
 
 Pydantic에서는 필드의 별칭(alias)을 정의하여 모델의 유횽성 검사(validation)와 직렬화(serialization)시 다른 이름을 사용할 수 있다. 이를 통해 외부 입력 데이터와 내부 모델의 필드 이름이 다른 경우 유용하게 사용할 수 있다.
@@ -194,6 +197,108 @@ print(user.model_dump(by_alias=True))
 # name='johnsmith' 
 # {'username': 'johnsmith'}
 ```
+
+---
+## Constrained Type
+
+Constrained Type을 통해 자신의 제한을 적용할 수 있다.
+
+### Numeric Constraints
+
+숫자로 제한을 적용한다.
+
+숫자 값을 제한하는데 사용되는 keyword arguments
+
+- `gt`: greater than
+- `lt`: less than
+- `ge`: greater than or equal to
+- `le`: less than or equal to
+- `multiple_of`: a multiple of the given number
+- `allow_inf_nan`: allow `inf`,`-inf`,`nan` values
+
+#### 예제
+```python
+# example
+from pydantic import BaseModel, Field
+
+class Foo(BaseModel):
+    positive: int = Field(gt=0)
+    non_negative: int = Field(ge=0)
+    negative: int = Field(lt=0)
+    non_positive: int = Field(le=0)
+    even: int = Field(multiple_of=2)
+    love_for_pydantic: float = Field(allow_inf_nan = True)
+
+foo = Foo(
+    positive=1,
+    non_negative=0,
+    negative=-1,
+    non_positive= 0,
+    even = 2,
+    love_for_pydantic=float('inf'),
+)
+```
+
+```python
+print(foo)
+
+# 출력값
+# positive=1 non_negative=0 negative=-1 non_positive=0 even=2 love_for_pydantic=inf
+```
+
+### String Constraints
+
+문자열 제한에 사용되는 fields
+
+- `min_length`: Minimum length of the string
+- `max_length`: Maximum length of the string
+- `pattern`: A regular expression that the string must match
+
+#### 예제
+```python
+# example
+from pydantic import BaseModel, Field
+  
+class Foo(BaseModel):
+    short: str = Field(min_length=3)
+    long: str = Field(max_length=10)
+    regex: str = Field(pattern=r'^\d*$')
+foo = Foo(short='foo', long='foobarbaz', regex='123')
+```
+
+```python
+print(foo)
+
+# 출력값
+# short='foo' long='foobarbaz' regex='123'
+```
+
+###  Decimal Constraints
+
+소수 제한에 사용되는 fields
+
+- `max_digits`: Maximum number of digits within the `Decimal`. It does not include a zero before the decimal poin or trailing decimal zeroes
+- `decimal_places`: Maximum number of decimal places allowed. It does not include trailing decimal zeroes
+
+#### 예제
+```python
+# example
+from decimal import Decimal
+from pydantic import BaseModel, Field
+
+class Foo(BaseModel):
+    precise: Decimal = Field(max_digits=5, decimal_places=2)
+foo = Foo(precise=Decimal('123.45'))
+```
+
+```python
+print(foo)
+
+# 출력값
+# precise=Decimal('123.45')
+```
+
+
 ## Reference
 
 >[!reference]
