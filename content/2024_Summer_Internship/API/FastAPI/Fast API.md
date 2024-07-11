@@ -598,6 +598,222 @@ async def read_user_item(
 ![](https://imgur.com/NFoYhfI.jpg)
 
 
+## 요청 본문
+
+클라이언트로부터 사용자의 API로 데이터를 보내야 할 때, **요청 본문**으로 보낸다.
+
+**요청 본문**은 클라이언트에서 API로 보내지는 데이터이다.
+**응답 본문**은 API가 클라이언트로 보내는 데이터이다.
+
+사용자의 API는 대부분의 경우 **응답 본문**을 보내야 한다. 하지만 클라이언트는 **요청 본문**을 매번 보낼 필요가 없다.
+
+- 데이터를 보내기 위해 `POST`,`PUT`,`DELETE` 혹은 `PATCH`중에 하나를 사용하는 것이 좋다.
+- `GET` 요청에 본문을 담아 보내는 것은 명세서에 정의되지 않은 행동이다.
+- `GET` 요청에 본문을 담는 것은 권장되지 않기에, `Swagger UI`같은 대화형 문서에서는 `GET` 사용시 담기는 본문에 대한 문서를 표시하지 않으며, 중간에 있는 프록시는 이를 지원하지 않을 수 있다.
+
+
+### Pydantic의 `BaseModel` Import
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+```
+
+
+### 사용자의 데이터 모델 만들기
+
+`BaseModel`를 상속받은 클래스로 사용자의 데이터 모델을 선언한다.
+모든 속성에 대해 표준 파이썬 타입을 사용한다.
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+```
+
+쿼리 매개변수를 선언할 때와 같이, 모델 속성이 기본 값을 가지고 있어도 이는 필수가 아니지만 그외에는 필수다. `None`을 사용하여 선택적으로 만들 수 있다.
+
+- 예시
+	- 위의 모델은 JSON "`object`"(혹은 파이썬 `dict`)을 선언한다.
+```python
+{
+    "name": "Foo",
+    "description": "선택적인 설명란",
+    "price": 45.2,
+    "tax": 3.5
+}
+```
+
+- `description`과 `tax`는 (기본 값이 `None`으로 되어 있어) 선택적이기 때문에, 이와는 다르게 쓰여도 유효하다.
+```python
+{
+    "name": "Foo",
+    "price": 45.2
+}
+```
+
+
+### 매개변수로서 선언하기
+
+사용자의 경로 작동에 추가하기 위해, 경로 매개변수 그리고 쿼리 매개변수에서 선언했던 것과 같은 방식으로 선언하면 된다.
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+```
+
+
+#### 결과
+
+위의 파이썬 타입 선언으로, FastAPI는 다음과 같이 동작한다.
+
+- 요청의 본문을 JSON으로 읽어들인다.
+- (필요하다면) 대응되는 타입으로 변환한다.
+- 데이터를 검증한다.
+	- 데이터가 유효하지 않다면, 정확히 어떤 것이 그리고 어디에서 데이터가 잘못되었는지 지시하는 명료한 에러를 반환할 것이다.
+- 매개변수 `item`에 포함된 수신 데이터를 제공한다.
+	- 함수 내에서 매개변수를 `Item`타입으로 선언했기 때문에, 모든 속성과 그에 대한 타입에 대한 편집기 지원(완성 등)을 받을 수 있다.
+- 사용자의 모델을 위한 JSON Schema정의를 생성한다. 사용자의 프로젝트에 적합하다면 사용하고 싶은 곳 어디에서나 사용이 가능하다.
+- 이러한 Schema는, 생성된 OpenAPI Schema 일부가 될 것이며, 자동 문서화 UI에 사용된다.
+
+
+### 자동 문서화
+
+모델의 JSON 스키마는 생성된 OpenAPI 스키마에 포함되며 대화형 API 문서에 표시된다.
+![](https://imgur.com/ZV5lAUF.jpg)
+
+이를 필요로 하는 각각의 경로 작동내부의 API 문서에도 사용된다.
+![](https://imgur.com/ewQSxh4.jpg)
+
+
+### 모델 사용하기
+
+함수 안에서 모델 객체의 모든 속성에 직접 접근이 가능하다.
+- `price_with_tax = item.price + item.tax`
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.post("/items/")
+async def create_item(item: Item):
+    item_dict = item.dict()
+    if item.tax:
+        price_with_tax = item.price + item.tax
+        item_dict.update({"price_with_tax": price_with_tax})
+    return item_dict
+```
+
+
+### 요청 본문 + 경로 매개변수
+
+경로 매개변수와 요청 본문을 <U>동시에 선언</U>할 수 있다.
+
+**FastAPI**는 경로 매개변수와 일치하는 함수 매개변수가 **경로에서 가져와야 한다**는 것을 인지하며,
+Pydantic 모델로 선언된 그 함수 매개변수는 **요청 본문에서 가져와야 한다**는 것을 인지할 것이다.
+```python
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item):
+```
+
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item):
+    return {"item_id": item_id, **item.dict()}
+```
+
+
+### 요청 본문 + 경로 + 쿼리 매개변수
+
+**본문**, **경로** 그리고 **쿼리 매개변수** 모두 동시에 선언할 수 있다.
+
+**FastAPI**는 각각을 인지하고 데이터를 올바른 위치에 가져올 것이다.
+- `async def update_item(item_id: int, item: Item, q: str | None = None):`
+```python
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+
+app = FastAPI()
+
+@app.put("/items/{item_id}")
+async def update_item(item_id: int, item: Item, q: str | None = None):
+    result = {"item_id": item_id, **item.dict()}
+    if q:
+        result.update({"q": q})
+    return result
+```
+
+함수 매개변수는 다음을 따라서 인지하게 된다.
+- 만약 매개변수가 **경로**에도 선언되어 있다면, 이는 경로 매개변수로 사용될 것이다.
+- 만약 매개변수가 (`int`,`float`,`str`,`bool` 등과 같은) **유일한 타입**으로 되어 있으면, **쿼리 매개변수**로 해석될 수 있다.
+- 만약 매개변수가 **Pydantic 모델** 타입으로 선언되어 있으면, **요청본문**으로 해석될 것이다.
+
+FastAPI는 `q`의 값이 필요없음을 알게 될 것이다. 기본값이 `= None`이기 때문이다.
+
+- `Union[str, None]`에 있는 `Union`은 FastAPI에 의해 사용된 것이 아니지만, 편집기로 더 나은 지원과 에러 탐지를 지원할 것이다.
+
+---
+
 >[!reference]
 >[FastAPI 공식 문서](https://fastapi.tiangolo.com/ko/tutorial/)
 >[Wikidocs](https://wikidocs.net/book/8531) (참고하지는 않았지만 좋은 참고자료)
