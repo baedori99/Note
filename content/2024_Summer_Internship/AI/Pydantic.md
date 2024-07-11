@@ -302,7 +302,7 @@ print(foo)
 ## Reference
 
 >[!reference]
->[Pydantic Documentation](https://docs.pydantic.dev/latest/)
->[Python)pydantic 알아보기](https://data-newbie.tistory.com/836#reference)
->[pydantic 살펴보기](https://seoyeonhwng.medium.com/pydantic-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-27c67273f0be)
->[pydantic을 사용하여, 안정성 높이기](https://re-code-cord.tistory.com/entry/pydantic%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B0%B1%EC%95%A4%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EA%B4%B4%EB%A1%AD%ED%9E%88%EA%B8%B0)
+>[Pydantic Documentation](https://docs.pydantic.dev/latest/)  
+>[Python)pydantic 알아보기](https://data-newbie.tistory.com/836#reference)  
+>[pydantic 살펴보기](https://seoyeonhwng.medium.com/pydantic-%EC%82%B4%ED%8E%B4%EB%B3%B4%EA%B8%B0-27c67273f0be)  
+>[pydantic을 사용하여, 안정성 높이기](https://re-code-cord.tistory.com/entry/pydantic%EC%9D%84-%EC%9D%B4%EC%9A%A9%ED%95%9C-%EB%B0%B1%EC%95%A4%EB%93%9C-%EA%B0%9C%EB%B0%9C%EC%9E%90-%EA%B4%B4%EB%A1%AD%ED%9E%88%EA%B8%B0)  

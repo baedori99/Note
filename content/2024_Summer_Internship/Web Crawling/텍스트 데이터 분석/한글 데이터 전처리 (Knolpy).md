@@ -16,8 +16,8 @@ tags:
 >5. Okt
 
 >[!reference]
->[konlpy(Korean Natural Language Processing)](https://konlpy.org/ko/stable/)
->[한국어 품사 태그 비교표](https://docs.google.com/spreadsheets/d/1OGAjUvalBuX-oZvZ_-9tEfYD2gQe7hTGsgUpiiBSXI8/edit?gid=0#gid=0)
+>[konlpy(Korean Natural Language Processing)](https://konlpy.org/ko/stable/)  
+>[한국어 품사 태그 비교표](https://docs.google.com/spreadsheets/d/1OGAjUvalBuX-oZvZ_-9tEfYD2gQe7hTGsgUpiiBSXI8/edit?gid=0#gid=0)  
 
 ---
 ## 형태소 분석기

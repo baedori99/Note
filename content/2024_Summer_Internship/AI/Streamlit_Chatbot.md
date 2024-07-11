@@ -223,9 +223,9 @@ if question:
 #### 2. 스트리밍 기능을 추가
 
 >[!reference] 스트리밍관련 출처
->[[LangChain#스트리밍(Streaming)|스트리밍에 관한 노트]]
->[Callback 관련 LangChain 공식 문서](https://python.langchain.com/v0.1/docs/modules/callbacks/)
->[[과제 공부용#Callback 함수|Callback함수에 관한 노트]]
+>[[LangChain#스트리밍(Streaming)|스트리밍에 관한 노트]]  
+>[Callback 관련 LangChain 공식 문서](https://python.langchain.com/v0.1/docs/modules/callbacks/)  
+>[[과제 공부용#Callback 함수|Callback함수에 관한 노트]]  
 
 - `class BaseCallbackHandler:`
 	- LangChain에서 Callback 함수들을 쓸 수 있게 하는 클래스 

@@ -6,8 +6,8 @@ draft: false
 # 각각 Template를 만들어 대상별 긍/부정 분류하기
 
 >[!reference]
->[인턴실습_OpenAPI 이용하기](https://ppsystem.netlify.app/00-pps/%F0%9F%93%95-ai--and--data-lab/%F0%9F%93%9D%EC%9D%B8%ED%84%B4%EC%8B%A4%EC%8A%B5%EA%B4%80%EB%A0%A8)
->[LangChain 공식 문서: Runnable Interface](https://python.langchain.com/v0.1/docs/expression_language/interface/#async-invoke)
+>[인턴실습_OpenAPI 이용하기](https://ppsystem.netlify.app/00-pps/%F0%9F%93%95-ai--and--data-lab/%F0%9F%93%9D%EC%9D%B8%ED%84%B4%EC%8B%A4%EC%8A%B5%EA%B4%80%EB%A0%A8)  
+>[LangChain 공식 문서: Runnable Interface](https://python.langchain.com/v0.1/docs/expression_language/interface/#async-invoke)  
 
 ![__|450](https://imgur.com/EWAniAn.jpg)  ![__|450](https://imgur.com/0x8IISB.jpg) 
 

@@ -1,7 +1,7 @@
 ---
 title: Fast API
 create_date: 2024-07-10 11:07 - 2024-07-10 11:07
-draft: true
+draft: false
 ---
 이 노트는 [Fast API 공식 문서](https://fastapi.tiangolo.com/ko/tutorial/)를 보고 실습한 내용에 대해서 적는 것이다.
 [[네트워크 관련 공부#GET과 POST|GET과 POST]]에 대해서 개념이라도 알고 있어야 한다.
