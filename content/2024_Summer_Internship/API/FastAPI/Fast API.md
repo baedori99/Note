@@ -596,3 +596,8 @@ async def read_user_item(
 
 2. **Send**키를 누르게 되면 URL에 있는 내용이 출력이 된다.
 ![](https://imgur.com/NFoYhfI.jpg)
+
+
+>[!reference]
+>[FastAPI 공식 문서](https://fastapi.tiangolo.com/ko/tutorial/)
+>[Wikidocs](https://wikidocs.net/book/8531) (참고하지는 않았지만 좋은 참고자료)
