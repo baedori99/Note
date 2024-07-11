@@ -6,6 +6,18 @@ draft: true
 이 노트는 [Fast API 공식 문서](https://fastapi.tiangolo.com/ko/tutorial/)를 보고 실습한 내용에 대해서 적는 것이다.
 [[네트워크 관련 공부#GET과 POST|GET과 POST]]에 대해서 개념이라도 알고 있어야 한다.
 
+## FastAPI란?
+
+Python 3.6 부터 제공되는 트렌디하고 높은 성능을 가진 ***파이썬 프레임워크***
+
+### 특징
+
+- API 문서 자동 생성 (Swagger와 Redoc 스타일 동일)
+- 의존성 주입 위주의 설계를 통한 DB 등에 대한 관리 편리
+- 비동기 동작으로 빠른 성능 보장
+- Pydantic을 사용한 Validation 체크
+- 뛰어난 공식 문서 가이드
+
 ## Installation
 
 - 자습시에는 모든 패키지를 설치하는 것을 추천한다.
