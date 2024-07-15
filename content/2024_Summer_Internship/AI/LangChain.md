@@ -214,7 +214,7 @@ llm = ChatOpenAI()
 ```
 
 ---
-## Prompt
+## 1. Prompt
 
 ### 예시
 
@@ -348,7 +348,44 @@ chain = prompt | llm
 	3. 연속적 분석: 지속적으로 들어오는 데이터를 분석할 수 있어, 실시간 모니터링 및 대응이 가능하다.
 
 ---
-## Memory
+## 2. Output Parsers(출력 파서)
+
+>[!reference]
+>[랭체인LangChain 노트 출력파서(Output Parsers)](https://wikidocs.net/233771)  
+
+### Output Parser
+LangChain의 Output Parser는 언어모델(LLM)의 출력을 더 유용하고 **구조화된 형태로 변환**하는 중요한 요소이다.
+
+### 역할
+- LLM의 출력을 받아 더 적합한 형식으로 전환
+- 구조화된 데이터 생성에 매우 유용
+- LangChain 프레임워크에서 다양한 종류의 출력 데이터를 파싱하고 처리
+
+### 주요 특징
+- 다양성: LangChain은 많은 종류의 출력 파서를 제공한다.
+- 스트리밍 지원: 많은 출력 파서들은 스트리밍을 지원한다.
+- 확장성: 최소한의 모듈부터 복잡한 모듈까지 확장 가능한 인터페이스를 제공한다.
+
+### Output Parser의 이점
+
+1. 구조화: LLM의 자유 형식 텍스트 출력을 구조화된 데이터로 변환한다.
+2. 일관성: 출력 형식을 일관되게 유지하여 후속 처리를 용이하게 한다.
+3. 유연성: 다양한 출력 형식(JSON, List, Dictionary등)으로 변환이 가능하다.
+
+### 1. PydanticOutputParser
+
+언어 모델의 출력을 더 구조화된 정보로 변환 하는 데 도움이 되는 클래스이다.  
+단순 텍스트 형태의 응답 대신, **사용자가 필요로 하는 정보를 명확하고 체계적인 형태로 제공**할 수 있다.
+
+#### 핵심 메서드
+
+- `get_format_instructions()`: 언어 모델이 **출력해야 할 정보의 형식을 정의하는 지침(instruction)을 제공**한다.
+	- 예시: 언어 모델이 출력해야 할 데이터의 필드와 그 형태를 설명하는 지침을 문자열로 반환할 수 있다. 이때 설정하는 instruction의 역할이 중요하다. 이 지침에 따라 언어 모델은 출력을 구조화하고, 이를 특정 데이터 모델에 맞게 변환할 수 있다.
+- `parse()`: 언어 모델의 **출력(문자열로 가정)을 받아들여 이를 특정 구조로 분석하고 변환**한다. Pydantic와 같은 도구를 사용하여, 입력된 문자열을 사전 정의된 스키마에 따라 검증하고, 해당 스키마를 따르는 데이터 구조로 변환한다.
+
+
+---
+## 3. Memory
 
 >[!reference]
 >[랭체인LangChain 노트 메모리(Memory)](https://wikidocs.net/233773)
@@ -658,7 +695,7 @@ print(response.content)
 ```
 
 ---
-## LCEL(LangChain Expression Language)
+## 4. LCEL(LangChain Expression Language)
 
 >[!reference] 참고 자료
 >[연구원님 LLM 연구노트](https://ppsystem.netlify.app/02-Python/1\)\-Langchain/Langchain-LCEL#-runnablelambda)  
