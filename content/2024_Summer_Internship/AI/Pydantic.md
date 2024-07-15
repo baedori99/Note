@@ -5,8 +5,8 @@ draft: false
 ---
 # Pydantic 라이브러리
 
-Pydantic은 데이터 유효성 검사와 설정 관리를 하는 라이브러리이다.
-Pydantic은 Python Type Hint를 기반으로 데이터 검증 및 구문 분석을 수행하여, 데이터 모델링과 검증을 쉽게 하고, 오류 발생시 유용한 디버깅 정보를 제공한다.
+Pydantic은 데이터 유효성 검사와 설정 관리를 하는 라이브러리이다.  
+Pydantic은 Python Type Hint를 기반으로 데이터 검증 및 구문 분석을 수행하여, 데이터 모델링과 검증을 쉽게 하고, 오류 발생시 유용한 디버깅 정보를 제공한다.  
 
 >[!info] Pydantic Document Comments
 >Data validation and settings management using Python type annotations.
@@ -14,8 +14,8 @@ Pydantic은 Python Type Hint를 기반으로 데이터 검증 및 구문 분석�
 >Define how data should be in pure, canonical Python; validate it with _pydantic_.
 >[Pydantic Document](https://docs.pydantic.dev/1.10/)
 
-Pydantic은 validation 라이브러리가 아닌 parsing 라이브러리이다.
-<U>즉, pydantic은 입력 데이터가 아닌 출력 모델의 유형과 제약 조건을 보장한다.</U>
+Pydantic은 validation 라이브러리가 아닌 parsing 라이브러리이다.  
+<U>즉, pydantic은 입력 데이터가 아닌 출력 모델의 유형과 제약 조건을 보장한다.</U>  
 
 ---
 
