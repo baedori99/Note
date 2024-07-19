@@ -16,21 +16,21 @@ pip install kiwipiepy
 ##  Kiwipiepy의 장점
 
 ### 1. 텍스트 분석 속도
-![](https://imgur.com/IOWToky.jpg)
+![](https://imgur.com/IOWToky.png)
 
 - 텍스트 분석 속도가 Mecab(IOS) 다음으로 제일 빠르다는 것을 알 수 있다.
 
 ---
 
 ### 2. 모호성 해소 정확도
-![](https://imgur.com/mx33UGW.jpg)
+![](https://imgur.com/mx33UGW.png)
 
 - 속도면에서 압도적이었던 Mecab이 모호성 해소 부분에서 성능이 떨어지지만 kiwipiepy는 90%에 준하는 성능을 보여준다.
 
 ---
 
 ### 3. 문장 분리 정확도
-![](https://imgur.com/PtfGe8y.jpg)
+![](https://imgur.com/PtfGe8y.png)
 
 - 문장 분리 기능을 비롯한 다양한 편의 기능을 제공한다.
 
@@ -151,5 +151,5 @@ word_cloud_noun_kiwi = wc_kiwi_noun(nouns_kiwi)
 ```
 
 - 결과값
-![](https://imgur.com/akXIU2K.jpg)
+![](https://imgur.com/akXIU2K.png)
 

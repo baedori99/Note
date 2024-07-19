@@ -363,4 +363,4 @@ word_cloud_noun_okt = wc_okt_noun(nouns_okt)
 ```
 
 - 결과값
-![](https://imgur.com/qRAybtB.jpg)
+![](https://imgur.com/qRAybtB.png)
