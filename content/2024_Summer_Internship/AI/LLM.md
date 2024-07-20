@@ -11,10 +11,11 @@ draft: true
 >	- 인공지능  
 >	- 자연어 처리(NLP)  
 >	- LLM  
->2. LLM의 학습 방법  
+>	- Multi Modal  
+>1. LLM의 학습 방법  
 >	- Fine Tuning  
 >	- In Context Learning  
->3. LLM의 서비스 과정  
+>2. LLM의 서비스 과정  
 
 이 노트는 원래 데이터 분석과정중 Embedding에 관련하여 노트할려고 했지만 LLM의 정리를 하며 찬찬히 나아가도록 하겠다.
 
@@ -50,8 +51,26 @@ draft: true
 
 ![](https://imgur.com/MjLsmXQ.png)
 
+- 억 단위 이상의 데이터를 통해 학습된 거대 언어 모델로, 텍스트를 입력하면 그에 맞는 대답을 하는 텍스트 생성 AI 분야이다.
+- 다양하게 활용할 수 있고 직관적으로 편리함을 느낄 수 있다는 장점이 있다.
+- 하지만, 대용량의 학습 데이터인 모델의 크기가 매우 커서 많은 자원과 시간이 필요한 분야이다.
 
+### 4) Multi Modal(멀티 모달)
+
+![](https://imgur.com/KVnG33g.png)
+
+- 모달리티(Modality)는 '양식', '양상'이라는 뜻인데, 보통 어떤 형태로 나타나는 현상이나 그것을 받아들이는 방식 또는 정보로 표현되거나 인식되는 특정한 형태 또는 방식을 말한다. 데이터의 형태로 말하면 텍스트, 오디오, 이미지 등이 있다. 
+- Multi Modal은 시각, 청각을 비롯한 여러 인터페이스를 통해서 정보를 주고받는 것을 말하는 개념 또는 다양한 형태의 데이터를 입력을 받으면 종합적으로 처리해서 다양한 형태로 출력이 가능한 기술을 의미한다.
+- Multi Modal AI는 다양한 채널의 모달리티를 동시에 받아들여서 학습하고 사고하는 AI 또는 인간이 사물을 받아들이는 다양한 방식과 동일하게 학습하는 AI
+- Multi Modal 예시
+	- 텍스트, 음성, 얼굴 표정을 통해 종합적으로 사람의 감정을 인식
+	- 심박수, 행동 및 음성을 통해 현재의 건강상태를 파악
+	- 수업 내용을 영상으로 만들거나 음성으로 Q&A를 하고, 퀴즈를 생성하는 학습 플랫폼폼
+
+## 2. LLM의 학습 방법
 >[!reference]
 >[PPS 연구원님의 LLM_전체적인 내용 정리](https://ppsystem.netlify.app/01-AI/2\)-Note/LLM-Note#1%EF%B8%8F%E2%83%A3-%EC%9A%A9%EC%96%B4-%EC%A0%95%EB%A6%AC)
 >[NVIDIA 트랜스포머 모델이란 무엇인가? (1)](https://blogs.nvidia.co.kr/blog/what-is-a-transformer-model/)
 >[WikiDocs_Attention Mechanism](https://wikidocs.net/22893)
+>[삼성 SDS Multi Modal](https://www.samsungsds.com/kr/insights/multi-modal-ai.html)
+
