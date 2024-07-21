@@ -68,6 +68,25 @@ draft: true
 	- 수업 내용을 영상으로 만들거나 음성으로 Q&A를 하고, 퀴즈를 생성하는 학습 플랫폼폼
 
 ## 2. LLM의 학습 방법
+
+LLM을 학습시키는 방법에는 2가지 있다.
+- Fine Tuning
+- In Context Learning(ICL)
+
+|       | Fine Tuning                              | In Context Learning(ICL)                           |
+| :---: | ---------------------------------------- | -------------------------------------------------- |
+| 학습 방식 | 파운데이션 모델에 추가 데이터를 학습<br>-> 모델 파라미터가 바뀐다. | 프롬프트 내에 정보 또는 예시를 제공하여 학습<br> -> 모델 파라미터가 바뀌지 않는다. |
+|  장점   | 특정 도메인에 대한 답변 선능 향상                      | 시간과 비용이 덜 하다.                                      |
+|  단점   | 시간과 비용이 많이 필요하다.                         | 잘 설계된 Prompt Engineering이 필요하다.                    |
+
+### 1) Fine Tuning
+
+![](https://imgur.com/bDXsHqx.png)
+
+- Fine Tuning은 새로운 학습 데이터를 통해 사전에 학습된 LLM을 활용하여 재학습하는 것을 말한다.
+- 모델이 매우 크기 때문에 많은 GPU가 필요하며, 이는 큰 비용을 초래한다.
+- 특정 도메인에 대한 LLM 서비스를 개발할 때 도메인 최적화를 위해 많이 쓰인다.(ex. 금융 등)
+- 제공하려는 서비스에 따라 만드는 학습 데이터 구조가 다르며, 데이터의 Bias(편향성), 윤리성, 관리 체계 등이 잘 고려되어야 한다.
 >[!reference]
 >[PPS 연구원님의 LLM_전체적인 내용 정리](https://ppsystem.netlify.app/01-AI/2\)-Note/LLM-Note#1%EF%B8%8F%E2%83%A3-%EC%9A%A9%EC%96%B4-%EC%A0%95%EB%A6%AC)
 >[NVIDIA 트랜스포머 모델이란 무엇인가? (1)](https://blogs.nvidia.co.kr/blog/what-is-a-transformer-model/)
