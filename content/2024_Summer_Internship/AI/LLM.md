@@ -1,7 +1,7 @@
 ---
 title: LLM
 create_date: 2024-07-17 17:07 - 2024-07-17 17:07
-draft: true
+draft: false
 ---
 >[!example]- 연구원님이 설명해주신 노트
 >![](https://imgur.com/mpTwXPI.jpg)
