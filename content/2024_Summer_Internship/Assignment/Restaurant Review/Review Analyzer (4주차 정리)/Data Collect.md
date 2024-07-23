@@ -3,8 +3,6 @@ title: Data Collect (데이터 수집)
 create_date: 2024-07-22 17:07 - 2024-07-22 17:07
 draft: false
 ---
-# Data Collect (데이터 수집)
-
 - [연구원님 Github](https://github.com/narae3759/PPS/tree/main/projects/intern_project/review_analyzer)을 보면 나중에 또 쓰일 일이 있을 수 있기에 `Python`파일로 저장하여 나중에 쓰기 편하게 만든다.
 
 >[!Note]- `review_crawler.py`

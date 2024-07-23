@@ -8,6 +8,7 @@ draft: false
 >[!info] Obsidian Markdown 정리
 > [Obsidian Help](https://publish.obsidian.md/help-ko/%ED%99%88)  
 > [Obsidian Markdown Cheatsheet](https://statisticsplaybook.com/obsidian-markdown-cheatsheet/)  
+> [자주 쓰이는 마크다운 문법들(with 옵시디언)](https://velog.io/@if-else/%EC%9E%90%EC%A3%BC-%EC%93%B0%EC%9D%B4%EB%8A%94-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4-%EB%AC%B8%EB%B2%95%EB%93%A4-with-%EC%98%B5%EC%8B%9C%EB%94%94%EC%96%B8#-%EB%A7%88%ED%81%AC%EB%8B%A4%EC%9A%B4%EC%9D%B4%EB%9E%80)
 
 ### 1. 제목(Headers)
 - 제목을 만들 때는 `#`을 사용하며, `#`의 개수에 따라 제목의 수준이 달라집니다.
