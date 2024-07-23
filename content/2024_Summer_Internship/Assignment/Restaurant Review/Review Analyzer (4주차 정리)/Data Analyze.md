@@ -152,7 +152,87 @@ ten_review2 = ten_review.head(10)
 ```
 
 ### 버전 1
+
+- 카테고리 4개인 `만족도`,`맛`,`서비스`,`가격`으로 나누어 분류를 시도했다.
+- 각 카테고리별로 나누어 긍/부정 분류를 한다.
+- 처음 시도한 것으로 클래스로 만들었다.
 >[!Note]- 버전1 코드
+>```python
+>class MyChain:
+>    """chain을 만들어 프롬프트와 연결하는 클래스"""
+>    
+>    def __init__(self, template):
+>        self.llm = ChatOpenAI()
+>        self.prompt = PromptTemplate.from_template(template)
+>        
+>    def invoke(self, review_text):
+>        input_data = {"sentence": review_text}
+>        result = (self.prompt | self.llm).invoke(input_data)
+>        return result
+>        
+>def parsing(output):
+>    """분류된 json형식을 딕셔너리로 바꾸는 함수"""
+>    try:
+>        result_dict = json.loads(output)
+>    except json.JSONDecodeError:
+>        result_dict = {}
+>    return result_dict
+>    
+>def save_parse_reviews(df, chain):
+>    """분류된 데이터들을 데이터프레임에 저장하는 함수"""
+>    temp = {"만족도": [], "맛":[], "서비스":[], "가격":[]}
+>    
+>    for sentence in df["Review_Text"]:
+>        emo_eval = chain.invoke(sentence)
+>        test_result = parsing(emo_eval.content)
+>        temp["만족도"].append(test_result["만족도"])
+>        temp["맛"].append(test_result["맛"])
+>        temp["서비스"].append(test_result["서비스"])
+>        temp["가격"].append(test_result["가격"])
+>        
+>    df["만족도"] = temp["만족도"]
+>    df["맛"] = temp["맛"]
+>    df["서비스"] = temp["서비스"]
+>    df["가격"] = temp["가격"]
+>    df.to_csv("./S_hotel_buffet_review_parse.csv")
+>    return df
+>    
+>load_dotenv()
+>
+>template = """\
+># INSTRUCTION
+>- 당신은 긍/부정 분류기입니다.
+>- 각 대상 '만족도', '맛', '서비스', '가격'에 대한 평가가 긍정적인지 부정적인지를 분류하세요.
+>- 대상에 대한 평가가 없는 경우 '-'을 표시하세요.
+>- 예시를 보고 결과를 다음과 같은 딕셔너리 형식으로 출력하세요:
+>    "만족도": "긍정/부정/-",
+>    "맛": "긍정/부정/-",
+>    "서비스": "긍정/부정/-",
+>    "가격": "긍정/부정/-"
+># SENTENCE: {sentence}
+>"""
+>```
+
+```python
+# 실행
+s_hotel_buffet_review_outlier = pd.read_csv("C:/Users/pps/Desktop/Restaurant_Review/Data_Preprocessing/S_hotel_buffet_review_IQR.csv")
+s_hotel_buffet_review_outlier = s_hotel_buffet_review_outlier.drop('Unnamed: 0', axis = 1)
+
+chain = MyChain(template=template)
+
+s_hotel_buffet_parse_review = save_parse_reviews(s_hotel_buffet_review_outlier, chain)
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/XjlpSDi.png)
+
+
+### 버전 2
+
+- `pydantic` 라이브러리를 사용해 템플릿을 명확한 제시 방향으로 만든다.
+- `맛` 카테고리는 음식에 따라 긍/부정이 나누어질 수 있어 `맛` 카테고리 자체로 긍/부정 판단이 어렵다고 생각했다.
+- `맛` 카테고리에 `맛 긍정`과 `맛 부정` 항목에 음식 이름을 넣어 분류하겠다.
+>[!Note]- 버전2 코드
 >```python
 >class ActionModel(BaseModel):
 >    positive: List[str] = Field(description="긍정을 나타내는 키워드")
@@ -265,13 +345,14 @@ ten_review
 >[!example]- 실행 결과
 >![](https://imgur.com/JfgWJUi.png)
 
-### 버전 2
+
+### 버전 3
 
 - `맛` 카테고리에서 긍/부정에 대한 대상이 없다면 `음식 없음`을 출력하게 했다.
 - `맛` 카테고리에서 맛에 대한 긍/부정 리뷰글이 없다면 `"-"`을 출력하게 했다.
 - 위의 버전 2와 마찬가지로 정확하고 완벽하게 분류되어 출력되지 않았다.
 
->[!Note]- 버전 2 코드
+>[!Note]- 버전3 코드
 >```python
 >model = ChatOpenAI(model_name = "gpt-3.5-turbo")
 > output_parser = StrOutputParser()
@@ -372,3 +453,125 @@ ten_review2
 >[!example]- 실행 결과
 >![](https://imgur.com/u194XDn.png)
 
+
+### 버전 4
+
+- 카테고리별로 나누어 긍/부정을 확인하는 방법도 있지만 리뷰글 자체의 긍/부정도 확인하려고 한다.
+- 카테고리로 안나누고 긍/부정으로 분류하겠다.
+
+>[!Note]- 버전4 코드
+>```python
+>template = """\
+># INSTRUCTION
+>- 당신은 리뷰글 긍/부정 분류기입니다.
+>- 긍정과 부정이 SENTENCE에 같이 써져있으면 "-"로 분류하세요.
+>- SENTENCE를 [긍정, 부정, -]중 하나로 분류하세요.
+>- 다음과 같이 딕셔너리 형식으로 출력하세요.
+>    "긍/부정": "긍정/부정/-"
+># SENTENCE: {sentence}
+>"""
+>
+>model = ChatOpenAI(model_name = "gpt-3.5-turbo")
+>prompt = PromptTemplate.from_template(template)
+>chain = prompt | model
+>columns = {"긍/부정" : []}
+>
+>for i in range(len(review)):
+>    sentence = review.Review_Text[i]
+>    result = chain.invoke({"sentence":sentence})
+>    final = json.loads(result.content)
+>    columns["긍/부정"].append(final["긍/부정"])
+>    
+>review["긍/부정"] = columns["긍/부정"]
+>```
+
+```python
+ten_review
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/069jV0l.png)
+
+## 3) 긍/부정으로 분류된 데이터 시각화 및 분석
+
+- 여기에 쓰인 버전은 `버전1`이다.
+
+### Setting
+```python
+import pandas as pd
+
+s_hotel_buffet_review_parsed = pd.read_csv("C:\\Users\\pps\\Desktop\\Restaurant_Review\\Review_Analyzer\\Data_Analyze\\S_hotel_buffet_review_parse.csv", index_col=0, encoding="utf-8")
+
+review = s_hotel_buffet_review_parsed.copy()
+```
+
+```python
+# 한글 글꼴 설정
+import matplotlib.pyplot as plt
+import numpy as np
+
+font_path = 'C:/Users/pps/AppData/Local/Microsoft/Windows/Fonts/NanumBarunGothic.ttf'
+font_name = plt.matplotlib.font_manager.FontProperties(fname=font_path).get_name()
+
+plt.rcParams['font.family'] = font_name
+```
+
+### 3-1. 각 카테고리별 긍/부정 개수 확인
+
+- `value_counts()`로 column별 value 개수 확인
+```python
+def emotion_eval_counts(df, column_name):
+    """긍정/부정/- 개수 추출하는 함수"""
+    return df[column_name].value_counts()
+```
+
+```python
+print(emotion_eval_counts(review, "만족도"))
+print(emotion_eval_counts(review, "맛"))
+print(emotion_eval_counts(review, "서비스"))
+print(emotion_eval_counts(review, "가격"))
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/RKxwbKb.png)
+
+### 3-2. 각 카테고리별 긍/부정 개수 막대 그래프 시각화
+
+- 막대 그래프를 통해 `만족도`와 `맛` 카테고리에 대한 긍/부정 평가가 `서비스`, `가격`에 비해 월등히 많았다는 것을 알 수 있다.
+
+- 최종 함수
+```python
+def s_hotel_review_emote_bar(emote1,emote2,emote3,emote4):
+    """카테고리 4개인 막대그래프 만드는 함수"""
+    x = np.arange(4)
+
+    satisf_Aemo = emote1["긍정"] + emote1["부정"]
+    taste_Aemo = emote2["긍정"] + emote2["부정"]
+    service_Aemo = emote3["긍정"] + emote3["부정"]
+    price_Aemo = emote4["긍정"] + emote4["부정"]
+    
+    y_axis = [satisf_Aemo,taste_Aemo,service_Aemo,price_Aemo]
+    x_axis = ["만족도","맛","서비스","가격"]
+
+    plt.bar(x,y_axis)
+    plt.xticks(x, x_axis)
+    plt.title("카테고리별 긍/부정 갯수")
+    plt.show()
+```
+
+```python
+satisfy_emote = emotion_eval_counts(review, "만족도")
+taste_emote = emotion_eval_counts(review, "맛")
+service_emote = emotion_eval_counts(review, "서비스")
+price_emote = emotion_eval_counts(review, "가격")
+
+s_hotel_review_emote_bar(satisfy_emote,taste_emote,service_emote,price_emote)
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/M8ktRZq.png)
+
+### 3-3. 각 카테고리별 긍/부정 비율 파이그래프(Pie Chart) 시각화
+
+- 파이그래프를 통해 `만족도`,`맛`,`서비스` 카테고리에서 긍정의 비율이 **<U>90%</U>** 이상 많았다.
+- 하지만, `가격` 카테고리에선 부정의 비율이 **<U>80%</U>** 이상 많았다.
