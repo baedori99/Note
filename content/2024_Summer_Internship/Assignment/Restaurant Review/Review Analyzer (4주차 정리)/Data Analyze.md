@@ -1,7 +1,7 @@
 ---
 title: Data Analyze (데이터 탐색 및 분석)
 create_date: 2024-07-23 10:07 - 2024-07-23 10:07
-draft: true
+draft: false
 ---
 ## 1) 형태소 분석
 
@@ -967,3 +967,544 @@ satisfy_negative_parse_review.head()
 >![](https://imgur.com/rqHCBVI.png)
 
 - 가격 빈도 높은 명사 긍/부정 분류하는 클래스
+>[!Note]- 가격 빈도 높은 명사 긍/부정 분류하는 코드
+>```python
+># Setting
+>import os
+>import pandas as pd
+>import json
+>from dotenv import load_dotenv
+>from langchain_openai import ChatOpenAI
+>from langchain_core.prompts import PromptTemplate
+>
+>class MyChain:
+>    """chain을 만들어 프롬프트와 연결하는 클래스"""
+>    
+>    def __init__(self, template):
+>        self.llm = ChatOpenAI()
+>        self.prompt = PromptTemplate.from_template(template)
+>        
+>    def invoke(self, review_text):
+>        input_data = {"sentence": review_text}
+>        result = (self.prompt | self.llm).invoke(input_data)
+>        return result
+>        
+>def parsing(output):
+>    """분류된 json형식을 딕셔너리로 바꾸는 함수"""
+>    try:
+>        result_dict = json.loads(output)
+>    except json.JSONDecodeError:
+>        result_dict = {}
+>    return result_dict
+>    
+>def save_price_positive_reviews(df, chain):
+>    """분류된 데이터들을 데이터프레임에 저장하는 함수"""
+>    temp = {"가격": [], "음식":[], "생일":[]}
+>    for sentence in df["긍정"]:
+>        emo_eval = chain.invoke(sentence)
+>        test_result = parsing(emo_eval.content)
+>        temp["가격"].append(test_result.get("가격"))
+>        temp["음식"].append(test_result.get("음식"))
+>        temp["생일"].append(test_result.get("생일"))
+>        
+>    df["긍정_가격"] = temp["가격"]
+>    df["긍정_음식"] = temp["음식"]
+>    df["긍정_생일"] = temp["생일"]
+>    df.to_csv("./july_eighteenth_price_positive_noun_classify.csv", index = False)
+>    return df
+>    
+>def save_price_negative_reviews(df, chain):
+>    """분류된 데이터들을 데이터프레임에 저장하는 함수"""
+>    temp = {"디저트": [], "가격":[], "친절":[]}
+>    
+>    for sentence in df["부정"]:
+>        emo_eval = chain.invoke(sentence)
+>        test_result = parsing(emo_eval.content)
+>        temp["디저트"].append(test_result.get("디저트"))
+>        temp["가격"].append(test_result.get("가격"))
+>        temp["친절"].append(test_result.get("친절"))
+>        
+>    df["부정_디저트"] = temp["디저트"]
+>    df["부정_가격"] = temp["가격"]
+>    df["부정_친절"] = temp["친절"]
+>    df.to_csv("./july_eighteenth_price_negative_noun_classify.csv", index = False)
+>    return df
+>    
+>load_dotenv()
+>
+>template_positive = """\
+># INSTRUCTION
+>- 당신은 긍/부정 분류기입니다.
+>- 각 대상 '가격', '음식', '생일'에 대한 평가가 긍정적인지 부정적인지를 분류하세요.
+>- 대상에 대한 평가가 없는 경우 '-'을 표시하세요.
+>- 예시를 보고 결과를 다음과 같은 딕셔너리 형식으로 출력하세요:
+>    "가격": "긍정/부정/-",
+>    "음식": "긍정/부정/-",
+>    "생일": "긍정/부정/-",
+># SENTENCE:{sentence}
+>"""
+>
+>template_negative = """\
+># INSTRUCTION
+>- 당신은 긍/부정 분류기입니다.
+>- 각 대상 '디저트', '가격', '친절'에 대한 평가가 긍정적인지 부정적인지를 분류하세요.
+>- 대상에 대한 평가가 없는 경우 '-'을 표시하세요.
+>- 예시를 보고 결과를 다음과 같은 딕셔너리 형식으로 출력하세요:
+>    "디저트": "긍정/부정/-",
+>    "가격": "긍정/부정/-",
+>    "친절": "긍정/부정/-",
+># SENTENCE:{sentence}
+>"""
+>```
+
+```python
+import pandas as pd
+
+price_review_positive = positive_review_extractor(review, "Review_Text","가격")
+price_review_negative = negative_review_extractor(review, "Review_Text","가격")
+df_price_positive = pd.DataFrame(price_review_positive)
+df_price_negative = pd.DataFrame(price_review_negative)
+```
+
+```python
+positive_price_chain = MyChain(template_positive)
+price_positive_parse_review = save_price_positive_reviews(df_price_positive, positive_price_chain)
+
+negative_price_chain = MyChain(template_negative)
+price_negative_parse_review = save_price_negative_reviews(df_price_negative,negative_price_chain)
+```
+
+```python
+price_positive_parse_review.head()
+
+price_negative_parse_review.head()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/VP6i1p2.png)
+>
+>![](https://imgur.com/u9YrNJB.png)
+
+### 3-6. 빈도 높은 명사들의 총 긍/부정 개수
+
+- 빈도 높은 명사들의 총 긍/부정 개수를 구하여 리뷰글에서 언급되는 양을 확인한다.
+
+- `만족도` 카테고리의 빈도 높은 명사들의 총 긍/부정 개수를 구하는 코드
+```python
+print(emotion_eval_counts(satisfy_positive_parse_review, "긍정_디저트"))
+print(emotion_eval_counts(satisfy_positive_parse_review, "긍정_음식"))
+print(emotion_eval_counts(satisfy_positive_parse_review, "긍정_친절"))
+
+print(emotion_eval_counts(satisfy_negative_parse_review, "부정_음식"))
+print(emotion_eval_counts(satisfy_negative_parse_review, "부정_사람"))
+print(emotion_eval_counts(satisfy_negative_parse_review, "부정_가격"))
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/e7tg5Y9.png)
+
+- `가격` 카테고리의 빈도 높은 명상들의 총 긍/부정 개수를 구하는 코드
+```python
+print(emotion_eval_counts(price_positive_parse_review, "긍정_가격"))
+print(emotion_eval_counts(price_positive_parse_review, "긍정_음식"))
+print(emotion_eval_counts(price_positive_parse_review, "긍정_생일"))
+
+print(emotion_eval_counts(price_negative_parse_review, "부정_디저트"))
+print(emotion_eval_counts(price_negative_parse_review, "부정_가격"))
+print(emotion_eval_counts(price_negative_parse_review, "부정_친절"))
+```
+
+>[!example]- 실행결과
+>![](https://imgur.com/4suQ0jS.png)
+
+
+- `만족도` 카테고리의 빈도 높은 명사들의 긍/부정/- 평가 개수 구하기
+```python
+# 평가 개수 구하기
+# 긍정
+satisfy_pos_dessert_emo = emotion_eval_counts(satisfy_positive_parse_review, "긍정_디저트")
+satisfy_pos_food_emo = emotion_eval_counts(satisfy_positive_parse_review, "긍정_음식")
+satisfy_pos_kindness_emo = emotion_eval_counts(satisfy_positive_parse_review, "긍정_친절")
+
+# 부정
+satisfy_neg_food_emo = emotion_eval_counts(satisfy_negative_parse_review, "부정_음식")
+satisfy_neg_customer_emo = emotion_eval_counts(satisfy_negative_parse_review, "부정_사람")
+satisfy_neg_price_emo = emotion_eval_counts(satisfy_negative_parse_review, "부정_가격")
+```
+
+- 긍정/부정 총 평가 개수 구하기
+```python
+# 긍정 + 부정 평가 개수 구하기
+# 긍정
+satisfy_pos_dessert_total = satisfy_pos_dessert_emo["긍정"] + satisfy_pos_dessert_emo["부정"]
+satisfy_pos_food_total = satisfy_pos_food_emo["긍정"] + satisfy_pos_food_emo["부정"]
+satisfy_pos_kindness_total = satisfy_pos_kindness_emo["긍정"] + satisfy_pos_kindness_emo["부정"]
+
+# 부정
+satisfy_neg_food_total = satisfy_neg_food_emo["긍정"] + satisfy_neg_food_emo["부정"]
+satisfy_neg_customer_total = satisfy_neg_customer_emo["긍정"] + satisfy_neg_customer_emo["부정"]
+satisfy_neg_price_emo_total = satisfy_neg_price_emo["부정"]
+```
+
+- 막대그래프로 총 긍/부정 개수 확인하기
+```python
+x_positive = np.arange(3)
+satisfy_pos_dessert_emo = satisfy_pos_dessert_total
+satisfy_pos_food_emo = satisfy_pos_food_total
+satisfy_pos_kindness_emo = satisfy_pos_kindness_total
+
+x_negative = np.arange(3)
+satisfy_neg_food_emo = satisfy_neg_food_total
+satisfy_neg_customer_emo = satisfy_neg_customer_total
+satisfy_neg_price_emo = satisfy_neg_price_emo_total
+
+fig, ax = plt.subplots(1,2, figsize=(12, 6))
+
+y_s_pos_axis = [satisfy_pos_dessert_emo,satisfy_pos_food_emo,satisfy_pos_kindness_emo]
+x_s_pos_axis = ["디저트","음식","친절"]
+ax[0].bar(x_positive,y_s_pos_axis)
+ax[0].set_xticks(x_positive)
+ax[0].set_xticklabels(x_s_pos_axis)
+ax[0].set_title("만족도 긍정 리뷰글")
+
+y_s_neg_axis = [satisfy_neg_food_emo,satisfy_neg_customer_emo,satisfy_neg_price_emo]
+x_s_neg_axis = ["음식","사람","가격"]
+ax[1].bar(x_negative,y_s_neg_axis)
+ax[1].set_xticks(x_negative)
+ax[1].set_xticklabels(x_s_neg_axis)
+ax[1].set_title("만족도 부정 리뷰글")
+
+plt.suptitle("빈도 높은 카테고리별 명사들 총 긍/부정 개수")
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/nPQxAVQ.png)
+
+- `가격` 카테고리의 빈도 높은 명사들의 긍/부정/- 평가 개수 구하기
+```python
+# 평가 개수 구하기
+# 긍정
+price_pos_price_emo = emotion_eval_counts(price_positive_parse_review, "긍정_가격")
+price_pos_food_emo = emotion_eval_counts(price_positive_parse_review, "긍정_음식")
+price_pos_birthday_emo = emotion_eval_counts(price_positive_parse_review, "긍정_생일")
+
+# 부정
+price_neg_dessert_emo = emotion_eval_counts(price_negative_parse_review, "부정_디저트")
+price_neg_price_emo = emotion_eval_counts(price_negative_parse_review, "부정_가격")
+price_neg_kindness_emo = emotion_eval_counts(price_negative_parse_review, "부정_친절")
+```
+
+- 긍/부정 총 평가 개수 구하기
+```python
+# 긍정 + 부정 평가 개수 구하기
+# 긍정
+price_pos_price_total = price_pos_price_emo["긍정"] + price_pos_price_emo["부정"]
+price_pos_food_total = price_pos_food_emo["긍정"] + price_pos_food_emo["부정"]
+price_pos_birthday_total = price_pos_birthday_emo["긍정"] + price_pos_birthday_emo["부정"]
+
+# 부정
+price_neg_dessert_total = price_neg_dessert_emo["긍정"] + price_neg_dessert_emo["부정"]
+price_neg_price_total = price_neg_price_emo["긍정"] + price_neg_price_emo["부정"]
+price_neg_kindness_total = price_neg_kindness_emo["긍정"] + price_neg_kindness_emo["부정"]
+```
+
+- 막대그래프로 총 긍/부정 개수 확인하기
+```python
+x_positive = np.arange(3)
+price_pos_price_emo = price_pos_price_total
+price_pos_food_emo = price_pos_food_total
+price_pos_birthday_emo = price_pos_birthday_total
+
+x_negative = np.arange(3)
+price_neg_dessert_emo = price_neg_dessert_total
+price_neg_price_emo = price_neg_price_total
+price_neg_kindness_emo = price_neg_kindness_total
+
+fig, ax = plt.subplots(1,2, figsize=(12, 6))
+
+y_p_pos_axis = [price_pos_price_emo,price_pos_food_emo,price_pos_birthday_emo]
+x_p_pos_axis = ["가격","음식","생일"]
+ax[0].bar(x_positive,y_p_pos_axis)
+ax[0].set_xticks(x_positive)
+ax[0].set_xticklabels(x_p_pos_axis)
+ax[0].set_title("가격 긍정 리뷰글")
+
+y_p_neg_axis = [price_neg_dessert_emo,price_neg_price_emo,price_neg_kindness_emo]
+x_p_neg_axis = ["디저트","가격","친절"]
+ax[1].bar(x_negative,y_p_neg_axis)
+ax[1].set_xticks(x_negative)
+ax[1].set_xticklabels(x_p_neg_axis)
+ax[1].set_title("가격 부정 리뷰글")
+
+plt.suptitle("빈도 높은 카테고리별 명사들 총 긍/부정 개수")
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/7zvt20h.png)
+
+### 3-7. 빈도 높은 명사들의 긍/부정 비율 시각화
+
+- 비율 시각화를 통해 긍/부정 리뷰글에서 명사들이 긍정적인지 부정적인 확인한다.
+- `"-"`은 비중이 큰 것도 있지만 긍/부정 비율만 비교했을 때 긍/부정 차이가 애매해질 수 있어서 뺐다.
+- `만족도` 부정 리뷰글의 가격 긍/부정 비율은 긍정이 없기에 `"-"`로 대체하였다.
+	- 부정적인 평가만 존재한다.
+
+#### `만족도` 긍/부정 비율 시각화
+
+- 명사들의 긍/부정/- 평가 개수 구하기
+```python
+# 평가 개수 구하기
+# 긍정
+satisfy_pos_dessert_emo = emotion_eval_counts(satisfy_positive_parse_review, "긍정_디저트")
+satisfy_pos_food_emo = emotion_eval_counts(satisfy_positive_parse_review, "긍정_음식")
+satisfy_pos_kindness_emo = emotion_eval_counts(satisfy_positive_parse_review, "긍정_친절")
+
+# 부정
+satisfy_neg_food_emo = emotion_eval_counts(satisfy_negative_parse_review, "부정_음식")
+satisfy_neg_customer_emo = emotion_eval_counts(satisfy_negative_parse_review, "부정_사람")
+satisfy_neg_price_emo = emotion_eval_counts(satisfy_negative_parse_review, "부정_가격")
+```
+
+- 긍/부정 총 평가 개수 구하기
+```python
+# 긍정 + 부정 평가 개수 구하기
+# 긍정
+satisfy_pos_dessert_total = satisfy_pos_dessert_emo["긍정"] + satisfy_pos_dessert_emo["부정"] #+ satisfy_pos_dessert_emo["-"]
+satisfy_pos_food_total = satisfy_pos_food_emo["긍정"] + satisfy_pos_food_emo["부정"] #+ satisfy_pos_food_emo["-"]
+satisfy_pos_kindness_total = satisfy_pos_kindness_emo["긍정"] + satisfy_pos_kindness_emo["부정"] #+ satisfy_pos_kindness_emo["-"]
+
+# 부정
+satisfy_neg_food_total = satisfy_neg_food_emo["긍정"] + satisfy_neg_food_emo["부정"] #+ satisfy_neg_food_emo["-"]
+satisfy_neg_customer_total = satisfy_neg_customer_emo["긍정"] + satisfy_neg_customer_emo["부정"] #+ satisfy_neg_customer_emo["-"]
+satisfy_neg_price_total = satisfy_neg_price_emo["부정"] + satisfy_neg_price_emo["-"]
+```
+
+- 긍/부정 비율 구하기
+```python
+# 긍/부정 비율 구하기
+sp_dessert_positive = percent_emotion(satisfy_pos_dessert_emo["긍정"], satisfy_pos_dessert_total)
+sp_dessert_negative = percent_emotion(satisfy_pos_dessert_emo["부정"], satisfy_pos_dessert_total)
+
+sp_food_positive = percent_emotion(satisfy_pos_food_emo["긍정"], satisfy_pos_food_total)
+sp_food_negative = percent_emotion(satisfy_pos_food_emo["부정"], satisfy_pos_food_total)
+
+sp_kindness_positive = percent_emotion(satisfy_pos_kindness_emo["긍정"], satisfy_pos_kindness_total)
+sp_kindness_negative = percent_emotion(satisfy_pos_kindness_emo["부정"], satisfy_pos_kindness_total)
+
+sn_food_positive = percent_emotion(satisfy_neg_food_emo["긍정"], satisfy_neg_food_total)
+sn_food_negative = percent_emotion(satisfy_neg_food_emo["부정"], satisfy_neg_food_total)
+
+sn_customer_positive = percent_emotion(satisfy_neg_customer_emo["긍정"], satisfy_neg_customer_total)
+sn_customer_negative = percent_emotion(satisfy_neg_customer_emo["부정"], satisfy_neg_customer_total)
+
+sn_price_none = percent_emotion(satisfy_neg_price_emo["-"], satisfy_neg_price_emo_total)
+sn_price_negative = percent_emotion(satisfy_neg_price_emo["부정"], satisfy_neg_price_emo_total)
+```
+
+- `만족도` 긍정 리뷰글 빈도 높은 명사들 긍/부정 비율 파이그래프 시각화
+```python
+import matplotlib.pyplot as plt
+
+ratio1 = [sp_dessert_positive, sp_dessert_negative]
+ratio2 = [sp_food_positive, sp_food_negative]
+ratio3 = [sp_kindness_positive, sp_kindness_negative]
+
+labels = ["긍정", "부정"]
+colors = ["#00539C", "#EEA47F"]
+fig, ax = plt.subplots(1,3, figsize=(12, 5))
+ax[0].set_title("디저트 긍/부정 비율")
+ax[0].pie(ratio1, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[1].set_title("음식 긍/부정 비율")
+ax[1].pie(ratio2, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[2].set_title("친절 긍/부정 비율")
+ax[2].pie(ratio3, labels= labels, autopct='%.1f%%', colors = colors)
+
+plt.suptitle("만족도 긍정 리뷰글 빈도 높은 명사들 긍/부정 비율")
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/eHJexBL.png)
+
+- `만족도` 부정 리뷰글 빈도 높은 명사들 긍/부정 비율 파이그래프 시각화
+```python
+import matplotlib.pyplot as plt
+
+ratio1 = [sn_food_positive, sn_food_negative]
+ratio2 = [sn_customer_positive, sn_customer_negative]
+ratio3 = [sn_price_none, sn_price_negative]
+
+labels = ["긍정", "부정"]
+colors = ["#00539C", "#EEA47F"]
+fig, ax = plt.subplots(1,3, figsize=(12, 5))
+
+ax[0].set_title("음식 긍/부정 비율")
+ax[0].pie(ratio1, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[1].set_title("사람 긍/부정 비율")
+ax[1].pie(ratio2, labels= labels, autopct='%.1f%%', colors = colors)
+
+labels = ["-", "부정"]
+colors = ["#00539C", "#EEA47F"]
+
+ax[2].set_title("가격 긍/부정 비율")
+ax[2].pie(ratio3, labels= labels, autopct='%.1f%%', colors = colors)
+
+plt.suptitle("만족도 부정 리뷰글 빈도 높은 명사들 긍/부정 비율")
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/vk6LxHx.png)
+
+#### 가격 긍/부정 비율 시각화
+
+- 명사들의 긍/부정/- 개수 구하기
+```python
+# 평가 개수 구하기
+# 긍정
+price_pos_price_emo = emotion_eval_counts(price_positive_parse_review, "긍정_가격")
+price_pos_food_emo = emotion_eval_counts(price_positive_parse_review, "긍정_음식")
+price_pos_birthday_emo = emotion_eval_counts(price_positive_parse_review, "긍정_생일")
+  
+# 부정
+price_neg_dessert_emo = emotion_eval_counts(price_negative_parse_review, "부정_디저트")
+price_neg_price_emo = emotion_eval_counts(price_negative_parse_review, "부정_가격")
+price_neg_kindness_emo = emotion_eval_counts(price_negative_parse_review, "부정_친절")
+```
+
+- 긍/부정 총 평가 개수 구하기
+```python
+# 긍정 + 부정 평가 개수 구하기
+# 긍정
+price_pos_dessert_total = price_pos_price_emo["긍정"] + price_pos_price_emo["부정"]
+price_pos_food_total = price_pos_food_emo["긍정"] + price_pos_food_emo["부정"]
+price_pos_birthday_total = price_pos_birthday_emo["긍정"] + price_pos_birthday_emo["부정"]
+  
+# 부정
+price_neg_dessert_total = price_neg_dessert_emo["긍정"] + price_neg_dessert_emo["부정"]
+price_neg_price_total = price_neg_price_emo["긍정"] + price_neg_price_emo["부정"]
+price_neg_kindness_total = price_neg_kindness_emo["긍정"] + price_neg_kindness_emo["부정"]
+```
+
+- 긍/부정 비율 구하기
+```python
+# 긍/부정 비율 구하기
+ps_price_positive = percent_emotion(price_pos_price_emo["긍정"], price_pos_dessert_total)
+ps_price_negative = percent_emotion(price_pos_price_emo["부정"], price_pos_dessert_total)
+
+ps_food_positive = percent_emotion(price_pos_food_emo["긍정"], price_pos_food_total)
+ps_food_negative = percent_emotion(price_pos_food_emo["부정"], price_pos_food_total)
+
+ps_birthday_positive = percent_emotion(price_pos_birthday_emo["긍정"], price_pos_birthday_total)
+ps_birthday_negative = percent_emotion(price_pos_birthday_emo["부정"], price_pos_birthday_total)
+
+pn_dessert_positive = percent_emotion(price_neg_dessert_emo["긍정"], price_neg_dessert_total)
+pn_dessert_negative = percent_emotion(price_neg_dessert_emo["부정"], price_neg_dessert_total)
+
+pn_price_positive = percent_emotion(price_neg_price_emo["긍정"], price_neg_price_total)
+pn_price_negative = percent_emotion(price_neg_price_emo["부정"], price_neg_price_total)
+
+pn_kindness_positive = percent_emotion(price_neg_kindness_emo["긍정"], price_neg_kindness_total)
+pn_kindness_negative = percent_emotion(price_neg_kindness_emo["부정"], price_neg_kindness_total)
+```
+
+- `가격` 긍정 리뷰글 빈도 높은 명사들 긍/부정 비율 파이그래프 시각화
+```python
+import matplotlib.pyplot as plt
+
+ratio1 = [ps_price_positive, ps_price_negative]
+ratio2 = [ps_food_positive, ps_food_negative]
+ratio3 = [ps_birthday_positive, ps_birthday_negative]
+
+labels = ["긍정", "부정"]
+colors = ["#00539C", "#EEA47F"]
+fig, ax = plt.subplots(1,3, figsize=(12, 5))
+
+ax[0].set_title("가격 긍/부정 비율")
+ax[0].pie(ratio1, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[1].set_title("음식 긍/부정 비율")
+ax[1].pie(ratio2, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[2].set_title("생일 긍/부정 비율")
+ax[2].pie(ratio3, labels= labels, autopct='%.1f%%', colors = colors)
+
+plt.suptitle("가격 긍정 리뷰글 빈도 높은 명사들 긍/부정 비율")
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/rHyXI7p.png)
+
+- `가격` 부정 리뷰글 빈도 높은 명사들 긍/부정 비율 파이그래프 시각화
+```python
+import matplotlib.pyplot as plt
+
+ratio1 = [pn_dessert_positive, pn_dessert_negative]
+ratio2 = [pn_price_positive, pn_price_negative]
+ratio3 = [pn_kindness_positive, pn_kindness_negative]
+
+labels = ["긍정", "부정"]
+colors = ["#00539C", "#EEA47F"]
+fig, ax = plt.subplots(1,3, figsize=(12, 5))
+
+ax[0].set_title("디저트 긍/부정 비율")
+ax[0].pie(ratio1, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[1].set_title("가격 긍/부정 비율")
+ax[1].pie(ratio2, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[2].set_title("친절 긍/부정 비율")
+ax[2].pie(ratio3, labels= labels, autopct='%.1f%%', colors = colors)
+
+plt.suptitle("가격 부정 리뷰글 빈도 높은 명사들 긍/부정 비율")
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/x5uBlNR.png)
+
+### 3-8. 키워드를 리뷰글에서 확인하기
+
+- `가격` 카테고리에서 긍/부정 리뷰글 전부 디저트 키워드가 많은 언급이 되었다.
+- 디저트에 부정적인 면이 어떤 것이 있는지 확인한다.
+	- 사람들이 가격이 비싸지만 디저트는 맛있다와 같은 긍정적인 평가를 남겼다.
+- 디저트 키워드가 언급된 리뷰글들을 보면 긍정적인 평가가 많다는 것을 알 수 있다.
+- 다른 키워드들도 확인한다.
+
+- 키워드: 디저트
+```python
+dessert_review=review[review["Review_Text"].str.contains("디저트")]
+dessert_review.tail(10)
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/E1MdBMl.png)
+
+- 키워드: 친절
+```python
+kindness_review=review[review["Review_Text"].str.contains("친절")]
+kindness_review.head(10)
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/OuiC9dg.png)
+
+- 키워드: 음식
+```python
+food_review=review[review["Review_Text"].str.contains("음식")]
+food_review.head(10)
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/01GGe8M.png)
+
