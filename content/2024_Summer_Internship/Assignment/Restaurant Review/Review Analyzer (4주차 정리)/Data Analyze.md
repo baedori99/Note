@@ -575,3 +575,395 @@ s_hotel_review_emote_bar(satisfy_emote,taste_emote,service_emote,price_emote)
 
 - 파이그래프를 통해 `만족도`,`맛`,`서비스` 카테고리에서 긍정의 비율이 **<U>90%</U>** 이상 많았다.
 - 하지만, `가격` 카테고리에선 부정의 비율이 **<U>80%</U>** 이상 많았다.
+
+- 긍/부정/- 평가 개수 구하기
+```python
+# 평가 개수 구하기
+satisfy_emo = emotion_eval_counts(review, "만족도")
+taste_emo = emotion_eval_counts(review, "맛")
+service_emo = emotion_eval_counts(review, "서비스")
+price_emo = emotion_eval_counts(review, "가격")
+```
+
+- 긍/부정 총 평가 개수 구하기
+```python
+# 긍정 + 부정 평가 개수 구하기
+satisfy_total = satisfy_emo["긍정"] + satisfy_emo["부정"]
+taste_total = taste_emo["긍정"] + taste_emo["부정"]
+service_total = service_emo["긍정"] + service_emo["부정"]
+price_total = price_emo["긍정"] + price_emo["부정"]
+```
+
+- 백분율 구하는 함수
+```python
+def percent_emotion(reviews, total_number):
+    """백분율 구하는 함수"""
+    return reviews / total_number * 100
+```
+
+- 각 카테고리별 긍/부정 비율 구하기
+```python
+# 각 카테고리별 긍/부정 비율 구하기
+satisfy_positive = percent_emotion(satisfy_emo["긍정"], satisfy_total)
+satisfy_negative = percent_emotion(satisfy_emo["부정"], satisfy_total)
+
+taste_positive = percent_emotion(taste_emo["긍정"], taste_total)
+taste_negative = percent_emotion(taste_emo["부정"], taste_total)
+
+service_positive = percent_emotion(service_emo["긍정"], taste_total)
+service_negative = percent_emotion(service_emo["부정"], taste_total)
+
+price_positive = percent_emotion(price_emo["긍정"], price_total)
+price_negative = percent_emotion(price_emo["부정"], price_total)
+```
+
+- 각 카테고리별 긍/부정 비율 파이그래프 시각화
+```python
+import matplotlib.pyplot as plt
+  
+ratio1 = [satisfy_positive, satisfy_negative]
+ratio2 = [taste_positive, taste_negative]
+ratio3 = [service_positive, service_negative]
+ratio4 = [price_positive, price_negative]
+
+labels = ["긍정", "부정"]
+colors = ["#00539C", "#EEA47F"]
+
+fig, ax = plt.subplots(2,2, figsize=(6, 6))
+
+ax[0,0].set_title("만족도 긍/부정 비율")
+ax[0,0].pie(ratio1, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[0,1].set_title("맛 긍/부정 비율")
+ax[0,1].pie(ratio2, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[1,0].set_title("서비스 긍/부정 비율")
+ax[1,0].pie(ratio3, labels= labels, autopct='%.1f%%', colors = colors)
+
+ax[1,1].set_title("가격 긍/부정 비율")
+ax[1,1].pie(ratio4, labels= labels, autopct='%.1f%%', colors = colors)
+
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/7WI6Yg6.png)
+
+### 3-4. 카테고리별 긍/부정 리뷰글 명사, 동사/형용사 추출 및 시각화
+
+- 모든 카테고리의 리뷰글을 추출하지 않고 `만족도`와 `가격` 카테고리만 한다.
+	- `만족도` 카테고리는 리뷰글 수가 제일 많았고 긍정 리뷰글 수도 제일 많았다.
+	- `가격` 카테고리는 리뷰글 수가 적지만 부정 리뷰글 수가 많았다.
+- `만족도` 카테고리의 긍정 리뷰글과 `가격` 카테고리의 부정 리뷰글만 추출한 이유는 긍정 리뷰글중 제일 돋보이는 것과 부정 리뷰글중 제일 돋보이는 카테고리들이라 생각했기 때문이다.
+- **하지만**, `만족도` 카테고리의 부정 리뷰글과 `가격` 카테고리의 긍정 리뷰글도 그 비율은 매우 적지만 적은 만큼 이유가 확실할거라 생각하여 추출하였다.
+
+- 카테고리에 긍정으로 표시된 리뷰글만 추출하는 함수
+```python
+def positive_review_extractor(df, string_column, category_column):
+    """카테고리에 긍정으로 표시된 리뷰글만 추출하는 함수
+    Args:
+        df (_type_): 데이터프레임
+        string_column (_type_): 리뷰글항목
+        category_column (_type_): 카테고리명
+    """
+    positive_reviews = {"긍정":[]}
+    for i in range(len(df)):
+        if df[category_column][i] == "긍정":
+            positive_reviews["긍정"].append(df[string_column][i])
+    return positive_reviews
+```
+
+- 카테고리에 부정으로 표시된 리뷰글만 추출하는 함수
+```python
+def negative_review_extractor(df, string_column, category_column):
+    """카테고리에 부정으로 표시된 리뷰글만 추출하는 함수
+    Args:
+        df (_type_): 데이터프레임
+        string_column (_type_): 리뷰글항목
+        category_column (_type_): 카테고리명
+    """
+    negative_reviews = {"부정":[]}
+    for i in range(len(df)):
+        if df[category_column][i] == "부정":
+            negative_reviews["부정"].append(df[string_column][i])
+    return negative_reviews
+```
+
+- 리뷰글 `string`으로 추출하는 함수
+```python
+def positive_review_string_extractor(df):
+    """딕셔너리로 받은 긍정 리뷰글 string으로 추출하는 함수"""
+    for key, value in df.items():
+        df[key] = ', '.join(value)
+    positive_string = df.get("긍정")
+    return positive_string
+
+def negative_review_string_extractor(df):
+    """딕셔너리로 받은 부정 리뷰글 string으로 추출하는 함수"""
+    for key, value in df.items():
+        df[key] = ', '.join(value)
+    negative_string = df.get("부정")
+    return negative_string
+```
+
+- `만족도` 카테고리 리뷰글 추출
+```python
+satisfy_review = positive_review_extractor(review, "Review_Text","만족도")
+satisfy_positive_string = positive_review_string_extractor(satisfy_review)
+kiwi_satisfy_positive_noun = kiwi_noun_extractor(satisfy_positive_string)
+kiwi_satisfy_positive_verb_adj = kiwi_verb_adj_extractor(satisfy_positive_string)
+
+satisfy_negative_review = negative_review_extractor(review, "Review_Text", "만족도")
+satisfy_negative_string = negative_review_string_extractor(satisfy_negative_review)
+kiwi_satisfy_negative_noun = kiwi_noun_extractor(satisfy_negative_string)
+kiwi_satisfy_negative_verb_adj = kiwi_verb_adj_extractor(satisfy_negative_string)
+```
+
+- `가격` 카테고리 리뷰글 추출
+```python
+price_reviews = negative_review_extractor(review, "Review_Text","가격")
+price_negative_string = negative_review_string_extractor(price_reviews)
+kiwi_price_negative_noun = kiwi_noun_extractor(price_negative_string)
+kiwi_price_negative_verb_adj = kiwi_verb_adj_extractor(price_negative_string)
+
+price_positive_review = positive_review_extractor(review, "Review_Text", "가격")
+price_positive_string = positive_review_string_extractor(price_positive_review)
+kiwi_price_positive_noun = kiwi_noun_extractor(price_positive_string)
+kiwi_price_positive_verb_adj = kiwi_verb_adj_extractor(price_positive_string)
+```
+
+- 명사, 동사/형용사 워드클라우드로 나타내는 함수
+```python
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+from collections import Counter
+
+def wordcloud_noun(noun_text):
+    """명사만 워드클라우드로 나타내는 함수"""
+    cnt = len(noun_text)
+    counts = Counter(noun_text)
+    tags_noun = counts.most_common(cnt)
+    wc = WordCloud(font_path='C:/Users/pps/AppData/Local/Microsoft/Windows/Fonts/NanumBarunGothic.ttf', background_color='white', width=800, height=600)
+    cloud_noun = wc.generate_from_frequencies(dict(tags_noun))
+    return cloud_noun
+
+def wordcloud_verb_adj(verb_adj_text):
+    """동사/형용사 워드 클라우드로 나타내는 함수"""
+    cnt = len(verb_adj_text)
+    counts = Counter(verb_adj_text)
+    tags_verb_adj = counts.most_common(cnt)
+    wc = WordCloud(font_path='C:/Users/pps/AppData/Local/Microsoft/Windows/Fonts/NanumBarunGothic.ttf', background_color='white', width=800, height=600)
+    cloud_verb_adj = wc.generate_from_frequencies(dict(tags_verb_adj))
+    return cloud_verb_adj
+```
+
+- 만족도 카테고리 명사, 동사/형용사 시각화
+```python
+wc_satisfy_noun = wordcloud_noun(kiwi_satisfy_positive_noun)
+wc_satisfy_verb_adj = wordcloud_verb_adj(kiwi_satisfy_positive_verb_adj)
+wc_negative_satisfy_noun = wordcloud_noun(kiwi_satisfy_negative_noun)
+wc_negative_satisfy_verb_adj = wordcloud_verb_adj(kiwi_satisfy_negative_verb_adj)
+
+fig, ax = plt.subplots(2,2, figsize=(8, 6))
+title_font = {
+        'fontsize':16,
+        'fontweight': 'bold'
+    }
+plt.axis('off')
+
+ax[0,0].imshow(wc_satisfy_noun)
+ax[0,0].set_title("만족도 긍정 리뷰글 명사모음", title_font)
+ax[0,0].axis('off')
+
+ax[0,1].imshow(wc_satisfy_verb_adj)
+ax[0,1].set_title("만족도 긍정 리뷰글 동사/형용사모음", title_font)
+ax[0,1].axis('off')
+
+ax[1,0].imshow(wc_negative_satisfy_noun)
+ax[1,0].set_title("만족도 부정 리뷰글 명사모음", title_font)
+ax[1,0].axis('off')
+
+ax[1,1].imshow(wc_negative_satisfy_verb_adj)
+ax[1,1].set_title("만족도 부정 리뷰글 동사/형용사모음", title_font)
+ax[1,1].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/9apfgUt.png)
+
+-  가격 카테고리 명사, 동사/형용사 시각화
+```python
+wc_price_noun = wordcloud_noun(kiwi_price_negative_noun)
+wc_price_verb_adj = wordcloud_verb_adj(kiwi_price_negative_verb_adj)
+wc_price_positive_noun = wordcloud_noun(kiwi_price_positive_noun)
+wc_price_positive_verb_adj = wordcloud_verb_adj(kiwi_price_positive_verb_adj)
+
+fig, ax = plt.subplots(2,2, figsize=(8, 6))
+title_font = {
+        'fontsize':16,
+        'fontweight': 'bold'
+    }
+plt.axis('off')
+ax[0,0].imshow(wc_price_positive_noun)
+ax[0,0].set_title("가격 긍정 리뷰글 명사모음", title_font)
+ax[0,0].axis('off')
+
+ax[0,1].imshow(wc_price_positive_verb_adj)
+ax[0,1].set_title("가격 긍정 리뷰글 동사/형용사모음", title_font)
+ax[0,1].axis('off')
+
+ax[1,0].imshow(wc_price_noun)
+ax[1,0].set_title("가격 부정 리뷰글 명사모음", title_font)
+ax[1,0].axis('off')
+
+ax[1,1].imshow(wc_price_verb_adj)
+ax[1,1].set_title("가격 부정 리뷰글 동사/형용사모음", title_font)
+ax[1,1].axis('off')
+
+plt.tight_layout()
+plt.show()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/7W4jciI.png)
+
+### 3-5. 빈도 높은 명사 3개 긍정/부정 분류
+
+- `만족도` 카테고리의 긍정/부정 리뷰글 빈도 높은 명사 3개를 위의 워드 클라우드를 통해 뽑는다.
+- 최대한 다양한 명사들로 하고 싶어 의미가 비슷한 명사는 제외하겠다.
+- `가격` 카테고리의 긍정/부정 리뷰글 빈도 높은 명사 3개를 위의 워드 클라우드를 통해 뽑는다.
+- `뷔페`, `호텔`등의 식당이름 혹은 식당을 나타내는 단어는 빼도록 하겠다.
+
+- 만족도/가격
+
+|  만족도   |        | 가격     |        |
+| :----: | ------ | ------ | ------ |
+| **긍정** | **부정** | **긍정** | **부정** |
+|   음식   | 음식     | 가격     | 디저트    |
+|   친절   | 사람     | 음식     | 가격     |
+|  디저트   | 가격     | 생일     | 친절     |
+
+- 만족도 빈도 높은 명사 긍/부정 분류하는 클래스
+>[!Note]- 만족도 빈도 높은 명사 긍/부정 분류하는 코드
+>```python
+># Setting
+>import os
+>import pandas as pd
+>import json
+>from dotenv import load_dotenv
+>from langchain_openai import ChatOpenAI
+>from langchain_core.prompts import PromptTemplate
+>
+>class MyChain:
+>    """chain을 만들어 프롬프트와 연결하는 클래스"""
+>    
+>    def __init__(self, template):
+>        self.llm = ChatOpenAI()
+>        self.prompt = PromptTemplate.from_template(template)
+>        
+>    def invoke(self, review_text):
+>        input_data = {"sentence": review_text}
+>        result = (self.prompt | self.llm).invoke(input_data)
+>        return result
+>        
+>def parsing(output):
+>    """분류된 json형식을 딕셔너리로 바꾸는 함수"""
+>    
+>    try:
+>        result_dict = json.loads(output)
+>    except json.JSONDecodeError:
+>        result_dict = {}
+>    return result_dict
+>    
+>def save_satisfy_positive_reviews(df, chain):
+>    """분류된 데이터들을 데이터프레임에 저장하는 함수"""
+>    
+>    temp = {"디저트": [], "음식":[], "친절":[]}
+>    for sentence in df["긍정"]:
+>        emo_eval = chain.invoke(sentence)
+>        test_result = parsing(emo_eval.content)
+>        temp["디저트"].append(test_result["디저트"])
+        temp["음식"].append(test_result["음식"])
+>        temp["친절"].append(test_result["친절"])
+>    df["긍정_디저트"] = temp["디저트"]
+>    df["긍정_음식"] = temp["음식"]
+>    df["긍정_친절"] = temp["친절"]
+>    df.to_csv("./july_eighteenth_satisfy_positive_noun_classify.csv", index = False)
+>    return df
+>    
+>def save_satisfy_negative_reviews(df, chain):
+>    """분류된 데이터들을 데이터프레임에 저장하는 함수"""
+>    
+>    temp = {"음식": [], "사람":[], "가격":[]}
+>    for sentence in df["부정"]:
+>        emo_eval = chain.invoke(sentence)
+>        test_result = parsing(emo_eval.content)
+>        temp["음식"].append(test_result["음식"])
+>        temp["사람"].append(test_result["사람"])
+>        temp["가격"].append(test_result["가격"])
+>    df["부정_음식"] = temp["음식"]
+>    df["부정_사람"] = temp["사람"]
+>    df["부정_가격"] = temp["가격"]
+>    df.to_csv("./july_eighteenth_satisfy_negative_noun_classify.csv", index = False)
+>    return df
+>    
+>load_dotenv()
+>
+>positive_template = """\
+># INSTRUCTION
+>- 당신은 긍/부정 분류기입니다.
+>- 각 대상 '디저트', '음식', '친절'에 대한 평가가 긍정적인지 부정적인지를 분류하세요.
+>- 대상에 대한 평가가 없는 경우 '-'을 표시하세요.
+>- 예시를 보고 결과를 다음과 같은 딕셔너리 형식으로 출력하세요:
+>    "디저트": "긍정/부정/-",
+>    "음식": "긍정/부정/-",
+>    "친절": "긍정/부정/-",
+># SENTENCE:{sentence}
+>"""
+>
+>negative_template = """\
+># INSTRUCTION
+>- 당신은 긍/부정 분류기입니다.
+>- 각 대상 '음식', '사람', '가격'에 대한 평가가 긍정적인지 부정적인지를 분류하세요.
+>- 대상에 대한 평가가 없는 경우 '-'을 표시하세요.
+>- 예시를 보고 결과를 다음과 같은 딕셔너리 형식으로 출력하세요:
+>    "음식": "긍정/부정/-",
+>    "사람": "긍정/부정/-",
+>    "가격": "긍정/부정/-",
+># SENTENCE:{sentence}
+>"""
+>```
+
+```python
+import pandas as pd
+
+satisfy_review_positive = positive_review_extractor(review, "Review_Text","만족도")
+satisfy_review_negative = negative_review_extractor(review, "Review_Text","만족도")
+df_satisfy_positive = pd.DataFrame(satisfy_review_positive)
+df_satisfy_negative = pd.DataFrame(satisfy_review_negative)
+```
+
+```python
+positive_satisfy_chain = MyChain(positive_template)
+satisfy_positive_parse_review = save_satisfy_positive_reviews(df_satisfy_positive, positive_satisfy_chain)
+
+negative_satisfy_chain = MyChain(negative_template)
+satisfy_negative_parse_review = save_satisfy_negative_reviews(df_satisfy_negative,negative_satisfy_chain)
+```
+
+```python
+satisfy_positive_parse_review.head()
+
+satisfy_negative_parse_review.head()
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/JxqlRk5.png)
+>  
+>![](https://imgur.com/rqHCBVI.png)
+
+- 가격 빈도 높은 명사 긍/부정 분류하는 클래스

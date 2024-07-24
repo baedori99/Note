@@ -1,5 +1,5 @@
 ---
-title: Data Preprocessing
+title: Data Preprocessing (데이터 전처리)
 create_date: 2024-07-22 17:07 - 2024-07-22 17:07
 draft: false
 ---
@@ -51,7 +51,7 @@ def text_preprocessing(df_reviews):
 	5. `Headers`항목에 뜨는 `Request URL`을 드래그하여 복사한다.
 	6. `requestURL`변수에 만들어 저장한다.
 
->[!Note]- `requestURL`
+>[!Note]- requestURL 변수 저장
 >```python
 >from hanspell import spell_checker
 >requestURL = "https://m.search.naver.com/p/csearch/ocontent/util/SpellerProxy?passportKey=d57c1916c869a49c5e8e10440ab2fd7bb04130e2&_callback=jQuery112408200366766849903_1721113439875&q=%EB%A7%9E%EC%B6%A4%EB%B2%95+%EA%B2%80%EC%82%AC%EB%A5%BC+%EC%9B%90%ED%95%98%EB%8A%94+%EB%8B%A8%EC%96%B4%EB%82%98+%EB%AC%B8%EC%9E%A5%EC%9D%84+%EC%9E%85%EB%A0%A5%ED%95%B4+%EC%A3%BC%EC%84%B8%EC%9A%94.&where=nexearch&color_blindness=0&_=1721113439876"
