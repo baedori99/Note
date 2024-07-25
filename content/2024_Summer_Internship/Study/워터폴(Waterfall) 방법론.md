@@ -4,7 +4,7 @@ create_date: 2024-07-24 16:07 - 2024-07-24 16:07
 draft: false
 ---
 프로젝트 관리 방식에 대해 공부할려고 한다.  
-Agile과 Waterfall를 다뤄볼거며 Waterfall에 대해 알아볼려고 한다.  
+[[애자일(Agile) 방법론|Agile]]과 Waterfall를 다뤄볼거며 Waterfall에 대해 알아볼려고 한다.  
 
 ## 워터폴(폭포수, Waterfall)이란?
 
@@ -98,3 +98,9 @@ Agile과 Waterfall를 다뤄볼거며 Waterfall에 대해 알아볼려고 한다
 	- 테스트 단계가 개발 후반부에 있기 때문에, 초기 단계에서 발생한 오류나 문제를 발견하고 수정하는 데 시간이 걸릴 수 있다.
 
 📌워터폴 방식은 명확한 요구사항이 있고, 변경 가능성이 낮으며, 프로젝트 규모가 크고 복잡한 경우 에 유용할 수 있다. **그러나** 변화가 빈번하거나 요구사항이 명확하지 않은 프로젝트에는 적합하지 않을 수 있다.
+
+
+>[!reference]
+>[소프트웨어 개발 방법론 - 워터폴 vs 애자일](https://velog.io/@jone/Dev-%EC%95%A0%EC%9E%90%EC%9D%BC-VS-%EC%9B%8C%ED%84%B0%ED%8F%B4-%EB%B0%A9%EB%B2%95%EB%A1%A0-%EB%B9%84%EA%B5%90)
+>[워터폴이란?](https://tech1.tistory.com/81)
+>[소프트웨어 개발 방법론 : 폭포수, 애자일, 린 방법론](https://adjh54.tistory.com/145)
