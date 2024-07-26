@@ -259,6 +259,6 @@ ht.print_table()
 
 
 >[!reference]
->[해시 테이블(Hash Table)](https://velog.io/@hysong/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94Hash-Table#%ED%95%B4%EC%8B%9C-%EC%B6%A9%EB%8F%8Chash-collision)
->[해시(Hash)](https://c4u-rdav.tistory.com/18)
+>[해시 테이블(Hash Table)](https://velog.io/@hysong/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94Hash-Table#%ED%95%B4%EC%8B%9C-%EC%B6%A9%EB%8F%8Chash-collision)  
+>[해시(Hash)](https://c4u-rdav.tistory.com/18)  
 >
