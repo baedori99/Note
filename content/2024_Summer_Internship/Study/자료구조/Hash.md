@@ -1,7 +1,7 @@
 ---
 title: Hash
 create_date: 2024-07-25 15:07 - 2024-07-25 15:07
-draft: true
+draft: false
 ---
 ## 해시(Hash)란?
 
@@ -63,7 +63,7 @@ draft: true
 ### 로드 팩터(Load Factor)
 $$load factor = \frac{n}{k}$$
 
-`Load Factor`란, `Hash Table`에 저장된 데이터 개수 `n`을 버킷의 개수 `k`로 나눈 것이다.
+`Load Factor`란, `Hash Table`에 저장된 <U>데이터 개수 `n`을 버킷의 개수 `k`로 나눈 것</U>이다.
 
 - `1`이면 `Hash Table`이 꽉 찬것이다
 - `1`보다 큰 경우 `Hash Collision`이 발생을 의미한다
@@ -152,6 +152,101 @@ ht.print_table()
 
 ### Open Addressing
 
+충돌 발생 시 탐사(Probing)를 통해 다른 빈 공간을 찾는 방식  
+
+- 모든 원소가 반드시 자신의 해시 값에 대응하는 주소에 저장된다는 보장이 없다.  
+
+![|400](https://imgur.com/nr3ow4V.png)
+
+위 그림에서 `윤아`에 충돌한 `서현`은 빈 공간을 탐사해 `index[3]`에 저장된다.  
+
+여러 Open Addressing 방식이 있다.  
+
+#### Linear Probing(선형 탐사)
+
+충돌이 발생하면 해당 위치부터 순차적으로 버킷을 하나하나씩 탐색  
+
+구현이 간단하면서도 전체적인 성능이 좋은 편이다.  
+**그러나** 선형 탐사 활용 시, 해시 테이블에 저장되는 데이터들이 <U>고르게 분포되지 않고 뭉치는 경향</U>이 있다.  
+
+- **클러스터링(Clustering)**: 해시 테이블 여기저기에 연속된 데이터 그룹이 생기는 현상 
+
+클러스터들이 점점 커지면 주변 클러스터들과 서로 합쳐져 해시 테이블 특정 위치에 데이터가 몰리게 되고, 이는 탐사 시간을 오래 걸리게 하여 해싱 효율을 떨어뜨린다.
+
+>[!Note]- Linear Probing Code
+>```python
+>class HashTable:
+>
+>    def __init__(self):
+>        self.size = 3
+>        self.table = [None] * self.size
+>
+>    def _probe(self, item: int, step: int) -> int:
+>        index = item % self.size
+>        while index < self.size:
+>            if self.table[index] is None:
+>                return index
+>            index += step
+>        return -1
+>
+>    def print_table(self) -> None:
+>        for i, item in enumerate(self.table):
+>            print("{} : {}".format(i, item))
+>
+>    def add(self, item: int) -> None:
+>        index = self._probe(item, 1)
+>
+>        if index == -1:
+>            index = self._probe(item, -1)
+>
+>        if index == -1:
+>            return
+>        self.table[index] = item
+>
+>    def remove(self, item: int) -> None:
+>        start = item % self.size
+>
+>        for i in range(start, self.size):
+>            if self.table[i] == item:
+>                self.table[i] = None
+>
+>        for i in range(0, start):
+>            if self.tanle[i] == item:
+>                self.table[i] = None
+>
+>ht = HashTable()
+>ht.add(1)
+>ht.add(4)
+>ht.add(2)
+>ht.print_table()
+>```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/jdrZ9JQ.png)
+
+
+![](https://imgur.com/jFkqc8v.png)
+
+해시 값 `02`로 충돌이 발생해서 다음 버킷을 탐색했는데 빈 버킷이므로 해당 위치에 데이터를 저장한다.  
+선형 탐색 이외에 제곱 탐색, 이중 해시 방법이 있다.  
+
+- **제곱 탐색(Quadratic Probing)**: 충돌이 발생하면 해당 위치부터 제곱만큼 떨어진 다음 버킷을 탐색(1, 4, 9, 16, ...)
+- **이중 해시(Double Hashing)**: 충돌이 발생하면 다른 해시 함수를 한번 더 적용
+
+## 장, 단점 및 용도
+
+### 장점  
+- 데이터 저장 /  읽기 속도가 빠름 (검색 속도가 빠름)
+- 해시는 키에 대한 데이터가 있는지 확인이 쉬움
+
+### 단점  
+- 일반적으로 저장공간이 많이 필요하다.
+- 여러 키에 해당하는 주소(index)가 동일한 경우 충돌을 해결하기 위한 별도 자료구조 필요하다.
+
+### 용도
+- 검색이 많이 필요한 경우
+- 저장, 삭제, 읽기가 빈번한 경우
+- 캐쉬 구현
 
 
 ## Time Complexity
@@ -161,6 +256,7 @@ ht.print_table()
 	- 데이터 저장 및 읽기 처리 속도가 매우 빠르다.
 - O(n)
 	- 충돌로 인한 Worst Case이다.
+
 
 >[!reference]
 >[해시 테이블(Hash Table)](https://velog.io/@hysong/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%95%B4%EC%8B%9C-%ED%85%8C%EC%9D%B4%EB%B8%94Hash-Table#%ED%95%B4%EC%8B%9C-%EC%B6%A9%EB%8F%8Chash-collision)
