@@ -14,7 +14,7 @@ draft: false
 **후입선출**/ **LIFO(Last In First Out)** 의 자료 구조 
 즉 <U>데이터가 순서대로 쌓이며 </U>**<U>가장 마지막에 삽입된 자료가 가장 먼저 삭제되는 구조</U>** 를 가지고 있다.
 
-## 스택의 작동원리
+## Stack 작동원리
 
 <p align="center">
 	<img src="https://imgur.com/8nEUkx7.png" height="500px" width="300px">

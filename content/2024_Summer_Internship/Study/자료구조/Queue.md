@@ -16,6 +16,11 @@ draft: true
 
 ![](https://imgur.com/eWjVNlw.png)
 
+## Queue 동작 원리
+
+Queue의 동작원리는 아래 그림과 같다.  
+![](https://imgur.com/EUwqnED.png)  
+
 
 ## Queue 특징
 
@@ -228,11 +233,92 @@ Dequeue 연산이 수행되면, 가장ㅁ너저 큐에 추가된 항목이 제�
 >data_queue.qsize()
 >```
 
+## Queue의 종류
+
+### 선형 큐(Linear Queue)
+
+- 기본적인 Queue 형태
+- Linear Queue는 배열, Linked List로 표현할 수 있다.  
+- 문제점
+	- 배열로 구현 시 크기 제한
+	- 빈 공간을 사용하기 위해서 모든 데이터를 꺼내기 or 자료를 한 칸씩 옮겨야 한다.  
+	- 연산량이 많은 `enqueue`와 `dequeue` 작업이 있는 경우 어느 시점에서 큐가 비어있어도 데이터를 추가하지 못하는 경우가 발생한다.  
+
+### 원형 큐(Circular Queue)
+
+- 원형으로 연결되어 있는 구조
+- 1차원 배열 형태로 큐를 원형으로 구성하여 배열의 처음과 끝을 연결하여 만든다.  
+- 삽입/삭제 연산에서, 변경되는 `front`와 `rear` 값이 가리키는 위치가 마지막 index에서 다시 처음 index로 돌아오게 되는 경우를 위해 나머지 연산자 $((front + 1) \bmod maxSize)$ 
+![](https://imgur.com/Q2eykFn.png)
+
+>[!note]- Implement Circular Queue
+>```python
+># Circular Queue
+>class Queue:
+>
+>    maxlen = 10
+>
+>    def __init__(self):
+>        self.array = [None] * self.maxlen
+>        self.head = -1
+>        self.tail = -1
+>
+>    def push(self, item):
+>        if not self.full():
+>            self.tail += 1
+>            self.array[self.tail % self.maxlen] = item
+>
+>    def pop(self):
+>        if not self.empty():
+>            self.head += 1
+>            return self.array[self.head % self.maxlen]
+>
+>    def front(self):
+>        if not self.empty():
+>            return self.array[(self.head + 1) % self.maxlen]
+>
+>    def back(self):
+>        if not self.empty():
+>            return self.array[self.tail % self.maxlen]
+>
+>    def size(self):
+>        return self.tail - self.head
+>
+>    def empty(self):
+>        return self.size() == 0
+>
+>    def full(self):
+>        return self.size() == self.maxlen
+>```
+
+### 우선순위 큐(Priority Queue)
 
 ## Queue 활용
 
+- 프로세스 관리
+- 너비 우선 탐색(BFS, Breadth-First Search) 구현
+	- 처리해야 할 노드의 리스트를 저장하는 용도로 큐를 사용한다.
+	- 노드 하나를 처리할 때마다 해당 노드와 인접한 노드들을 큐에 다시 저장한다.  
+	- 노드를 접근한 순서대로 처리할 수 있게 된다.  
+- 캐시(Cache) 구현
+- 대기열 순서와 같은 우선순위의 작업 예약
+- 버퍼(Buffer)
+	- 데이터를 한 곳에서 다른 한 곳으로 전송하는 동안 일시적으로 데이터를 보관하는 메모리의 영역  
+	- 일반적으로 입출력 및 네트워크 관련 기능에서 이용한다.  
+
+## Time Complexity
+
+
+| Operation       | Average | Worst |
+| --------------- | ------- | ----- |
+| Access          | Θ(n)    | O(n)  |
+| Search          | Θ(n)    | O(n)  |
+| Insert(enqueue) | Θ(1)    | O(1)  |
+| Delete(dequeue) | Θ(1)    | O(1)  |
 
 
 >[!reference]
 >[큐(Queue)](https://velog.io/@alkwen0996/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%81%90Queue)
->[Python Queue library 공식문서](https://docs.python.org/ko/3.7/library/queue.html)
+>[Python Queue library 공식문서](https://docs.python.org/ko/3.7/library/queue.html)  
+>[큐(Queue) With Python](https://velog.io/@eunchae2000/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%81%90Queue-with-Python)  
+>[큐(Queue)](https://velog.io/@hysong/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%81%90Queue)
