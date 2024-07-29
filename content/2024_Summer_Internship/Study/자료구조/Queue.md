@@ -57,10 +57,78 @@ Dequeue 연산이 수행되면, 가장ㅁ너저 큐에 추가된 항목이 제�
 
 - 배열
 	- 장점
-		- 배열 내 요소의 주로를 나타내는 인덱스를 통해 원하는 데이터를 빠르게 검색 가능  
+		- 배열 내 요소의 주로를 나타내는 인덱스를 통해 원하는 데이터를 빠르게 검색 가능하다.
 	- 단점
 		- 선언할 때 크기가 고정되어 배열에 들어있는 데이터 양에 따라 배열의 크기좆어이 필요하다.  
-		- 데이터를 중간에 삽입하거나 삭제할 경우 해당 데이터 뒤에 있는 요소들의 위치를 모두 이동시켜야하는 비효율적인 상황이 발생  
+		- 데이터를 중간에 삽입하거나 삭제할 경우 해당 데이터 뒤에 있는 요소들의 위치를 모두 이동시켜야하는 비효율적인 상황이 발생한다.
+
+- 배열을 사용한 Queue 구현
+>[!Note]- Implementing Queue using List(array)
+>```python
+># 배열을 이용한 Queue 구현
+>class ListQueue(object):
+>
+>    def __init__(self):
+>        self.queue = []
+>
+>    def dequeue(self):
+>        if len(self.queue) == 0:
+>            return -1
+>        return self.queue.pop(0)
+>
+>    def enqueue(self, n):
+>        self.queue.append(n)
+>        pass
+>
+>    def printQueue(self):
+>        print(self.queue)
+>
+>if __name__ == "__main__":
+>    queue_list = ListQueue()
+>
+>    queue_list.enqueue(1)
+>    queue_list.enqueue(2)
+>    queue_list.enqueue(3)
+>    queue_list.enqueue(4)
+>    queue_list.enqueue(5)
+>    
+>    queue_list.printQueue()
+>    print(queue_list.dequeue())
+>    print(queue_list.dequeue())
+>    print(queue_list.dequeue())
+>    print(queue_list.dequeue())
+>    print(queue_list.dequeue())
+>
+>    queue_list.printQueue()
+>```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/Vsz6KNf.png)
+
+- `dequeue` 라이브러리 사용한 Queue 구현
+>[!Note]- Implementing Queue using dequeue library
+>```python
+># dequeue 라이브러리 사용한 Queue 구현
+>from collections import deque
+>
+>dq = deque([])
+>
+>dq.append(1)
+>dq.append(2)
+>dq.append(3)
+>dq.append(4)
+>print(dq)
+>
+>print(dq.popleft())
+>print(dq.popleft())
+>print(dq.popleft())
+>print(dq.popleft())
+>print(dq)
+>```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/f65t2cP.png)
+
 
 >[!reference]
 >[큐(Queue)](https://velog.io/@alkwen0996/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%81%90Queue)
