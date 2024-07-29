@@ -1,6 +1,7 @@
 ---
 title: Queue
 create_date: 2024-07-26 13:07 - 2024-07-26 13:07
+draft: true
 ---
 ## 큐(Queue)란?
 
@@ -105,6 +106,84 @@ Dequeue 연산이 수행되면, 가장ㅁ너저 큐에 추가된 항목이 제�
 >[!example]- 실행 결과
 >![](https://imgur.com/Vsz6KNf.png)
 
+- 연결리스트(Linked List)
+	- 장점
+		- 데이터의 양에 상관없이 <U>크기가 동적으로 조절</U>된다.
+		- Index 대신 이전 데이터 그리고 다음 데이터의 <U>위치를 기억하는 노드 형태를 이용</U>한다.  
+		- 리스트 중간에 데이터 삽입, 삭제시 노드들 사이에 연결된 링크들을 끊어주거나 이어주면 되기 때문에 그 과정이 용이하다.  
+	- 단점
+		- 데이터에 접근할 때 연결되어 있는 노드들을 따라 양 끝에서부터 순차적으로 접근해야하기 때문에 <U>데이터 접근 속도가 배열에 비해 느리다.</U> 
+
+- Linked List를 사용한 Queue 구현
+>[!note]- Implementing Queue using Linked List
+>```python
+># Linked List를 사용한 Queue 구현
+>class Node(object):
+>
+>    def __init__(self, data):
+>        self.data = data
+>        self.next = None
+>
+>class SingleLinkedList(object):
+>
+>    def __init__(self):
+>        self.head = None
+>        self.tail = None
+>
+>    def enqueue(self, node):
+>        if self.head == None:
+>            self.head = node
+>            self.tail = node
+>        else:
+>            self.tail.next = nod
+>            self.tail = self.tail.next
+>
+>    def dequeue(self):
+>        if self.head == None:
+>            return -1
+>
+>        v = self.head.data
+>        self.head = self.head.next
+>        if self.head == None:
+>            self.tail = None
+>        return v
+>
+>    # 출력
+>    def print(self):
+>        current = self.head
+>        string = ""
+>        while current:
+>            string += str(current.data)
+>            if current.next:
+>                string += "->"
+>            current = current.next
+>        print(string)
+>
+>if __name__ == "__main__":
+>
+>    s = SingleLinkedList()
+>
+>    # 데이터 삽입
+>    s.enqueue(Node(1))
+>    s.enqueue(Node(2))
+>    s.enqueue(Node(3))
+>    s.enqueue(Node(4))
+>    s.print()
+>
+>    # 데이터 제거
+>    print(s.dequeue())
+>    print(s.dequeue())
+>    s.print()
+>    print(s.dequeue())
+>    print(s.dequeue())
+>```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/L3JfXmc.png)
+
+📌 모든 원소의 값을 필요로 하거나 중간 데이터를 삽입/삭제할 경우  **Linked List**를 사용하는 것이 좋다.  
+📌 특정 데이터에 접근하는 것이 목적이라면 **배열**을 사용하는 것이 좋다.   
+
 - `dequeue` 라이브러리 사용한 Queue 구현
 >[!Note]- Implementing Queue using dequeue library
 >```python
@@ -129,6 +208,31 @@ Dequeue 연산이 수행되면, 가장ㅁ너저 큐에 추가된 항목이 제�
 >[!example]- 실행 결과
 >![](https://imgur.com/f65t2cP.png)
 
+- queue 라이브러리 사용한 Queue 구현
+>[!note]- Implementing Queue using queue library
+>```python
+># queue 라이브러리 사용하여 Queue 구현
+>import queue
+>
+>data_queue = queue.Queue()
+>
+># 데이터 삽입
+>data_queue.put("data")
+>data_queue.put(7)
+>
+># 현재 큐에 데이터가 몇 개인지 확인
+>data_queue.qsize()
+>
+># 데이터 제거
+>data_queue.get()
+>data_queue.qsize()
+>```
+
+
+## Queue 활용
+
+
 
 >[!reference]
 >[큐(Queue)](https://velog.io/@alkwen0996/%EC%9E%90%EB%A3%8C%EA%B5%AC%EC%A1%B0-%ED%81%90Queue)
+>[Python Queue library 공식문서](https://docs.python.org/ko/3.7/library/queue.html)
