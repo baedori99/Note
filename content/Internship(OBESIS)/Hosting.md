@@ -1,7 +1,7 @@
 ---
 title: Hosting
 create_date: 2024-07-31 13:07 - 2024-07-31 13:07
-draft: true
+draft: false
 ---
 ## 호스팅(Hosting)이란?
 
