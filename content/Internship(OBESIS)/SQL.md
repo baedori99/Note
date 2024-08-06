@@ -1,7 +1,7 @@
 ---
 title: SQL
 create_date: 2024-08-05 17:08 - 2024-08-05 17:08
-draft: true
+draft: false
 ---
 이 노트는 SQL에 대해 이론으로만 조금 접해본 경험이 있어 SQL애 대한 기본 문법, 구조를 익히기 위해 적는다.   
 
@@ -23,5 +23,40 @@ draft: true
 | 장점  | 직관적, 익히기 쉽다.                                       | 사용시 쿼리 언어에 능숙해야함.<br>데이터 모델링 시 지식과 숙련도 필요 |
 | 단점  | 많은 데이터 처리시 느려짐(저성능)<br>다소 복잡한 내용 청리 어려움<br>동시작업 불가 | 많은 데이터 쉽게 처리(고성능)<br>복잡한 처리 가능<br>동시작업 가능 |
 
+## MySQL의 구조
+
+>[!Summary]
+>- 관계형 데이터베이스는 스프레드 시트와 유사하게 표(Table) 형태로 데이터를 저장한다.  
+>- 이러한 표(Table)이 모여 스키마(Schema), 스키마(Schema)가 모여 데이터베이스 서버(Database Server)가 된다.  
+>- 스키마(Schema)는 다른 말로 데이터베이스(Database)라고 한다.  
+
+`MySQL`에는 3개정도의 구성요소를 가지고 있다.  
+
+`MySQL` 더 나아가 관계형 데이터베이스(RDBMS)는 엑셀과 같은 스프레드시트와 비슷한 구조를 가지고 있다.  
+
+### Table(표)  
+정보는 결국에는 표에 저장이 된다.  
+표는 서로 연관된 데이터들을 모아 놓은 Table이다.   
+
+![](https://imgur.com/60kP1yH.png)
+
+### Database(데이터베이스) / Schema(스키마)
+
+**데이터베이스**란 MySQL에서는 서로 연관된 표들을 그룹핑해서 연관되어 있지 않은 표들과 분리하는 폴더와 같은 개념이다.  
+
+스키마는 데이터베이스와 같은 의미의 개념이다.  
+
+![](https://imgur.com/PcG5vnp.png)
+
+### Database Server(데이터베이스 서버)
+
+**데이터베이스 서버**란 데이터베이스(스키마) 즉, 폴더들이 모여 있는 큰 폴더이다.   
+
+MySQL을 설치했다는 것은 데이터베이스 서버라는 프로그램을 설치했다는 뜻이다.  그 프로그램이 가지고 있는 기능성을 이용해 데이터와 관련된 여러가지 작업을 하는 것이다.  
+
+![](https://imgur.com/2xrEZB0.png)
+
+
 >[!reference]
 >[생활코딩 DATABASE2 - MySQL 유튜브 재생목록](https://www.youtube.com/playlist?list=PLuHgQVnccGMCgrP_9HL3dAcvdt8qOZxjW)  
+>[생활코딩 #MySQL의 구조](https://daco2020.tistory.com/24)  
