@@ -23,6 +23,7 @@ draft: false
 | 장점  | 직관적, 익히기 쉽다.                                       | 사용시 쿼리 언어에 능숙해야함.<br>데이터 모델링 시 지식과 숙련도 필요 |
 | 단점  | 많은 데이터 처리시 느려짐(저성능)<br>다소 복잡한 내용 청리 어려움<br>동시작업 불가 | 많은 데이터 쉽게 처리(고성능)<br>복잡한 처리 가능<br>동시작업 가능 |
 
+---
 ## 2. MySQL의 구조
 
 >[!Summary]
@@ -56,6 +57,7 @@ MySQL을 설치했다는 것은 데이터베이스 서버라는 프로그램을 
 
 ![](https://imgur.com/2xrEZB0.png)
 
+---
 ## 3. 서버 접속
 
 - 데이터베이스를 통해 얻을 수 있는 효용
@@ -90,15 +92,59 @@ MySQL 서버에 접속하게 된다.
 
 지금 이 상태는 위의 [[SQL#Database Server(데이터베이스 서버)|데이터베이스 서버]] 에 있는 그림을 보면 데이터베이스 서버 안으로 들어온 상태라고 볼 수 있다.  
 
+---
 ## 4. Schema(스키마)의 사용  
 
-스키마(데이터베이스)를 생성하는 방법
+1. 스키마(데이터베이스)를 생성하는 방법
 
+`CREATE DATABASE 데이터베이스이름;`  
+
+- 예시
 ```sql
-
+CREATE DATABASE opentutorials;
 ```
+
+2. 스키마(데이터베이스)를 삭제하는 방법
+
+`DROP DATABASE 데이터베이스 이름;`  
+
+- 예시
+```SQL
+DROP DATABASE opentutorials;
+```
+
+📌 인생에서 `DROP DATABASE`를 할 일은 거의 없다.  
+
+3. 스키마(데이터베이스)리스트를 보는 방법  
+
+`SHOW DATABASES;`  
+
+- 예시
+```sql
+SHOW DATABASES;
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/3IlRk0G.png)  
+
+4. 테이블을 만들기 전 스키마(데이터베이스)를 사용하는 방법
+
+`USE 데이터베이스이름;`  
+
+- 예시
+```sql
+USE opentutorials;
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/0DTRU2o.png)  
+
+위의 코드의 뜻은 내가 내리는 명령을 `opentutorials`라고 하는 스키마(데이터베이스)에 있는 표를 대상으로 명령을 실행한다는 의미이다.  
+- 다른 말로 "이 명령어 이후의 쿼리는 해당 데이터베이스에 적용된다."라는 의미이다.  
+
 
 >[!reference]
 >[생활코딩 DATABASE2 - MySQL 유튜브 재생목록](https://www.youtube.com/playlist?list=PLuHgQVnccGMCgrP_9HL3dAcvdt8qOZxjW)  
 >[생활코딩 MySQL의 구조](https://daco2020.tistory.com/24)  
 >[생활코딩 - MySQL - 5. 서버접속](https://act-think.tistory.com/135)  
+>[MySQL- MySQL의 구조, 서버 접속, 스키마의 사용](https://sunandbean.tistory.com/319)  
