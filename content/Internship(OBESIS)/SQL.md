@@ -104,6 +104,9 @@ MySQL 서버에 접속하게 된다.
 CREATE DATABASE opentutorials;
 ```
 
+>[!reference]-
+>[MySQL 공식문서 Creating and Selecting a Database](https://dev.mysql.com/doc/refman/8.4/en/creating-database.html)  
+
 2. 스키마(데이터베이스)를 삭제하는 방법
 
 `DROP DATABASE 데이터베이스 이름;`  
@@ -114,6 +117,9 @@ DROP DATABASE opentutorials;
 ```
 
 📌 인생에서 `DROP DATABASE`를 할 일은 거의 없다.  
+
+>[!reference]- 
+>[구글검색: mysql drop database](https://www.google.com/search?q=mysql+drop+database&oq=mysql+drop+database&gs_lcrp=EgZjaHJvbWUyCQgAEEUYORiABDIHCAEQABiABDIMCAIQABgUGIcCGIAEMgcIAxAAGIAEMgcIBBAAGIAEMgcIBRAAGIAEMgcIBhAAGIAEMgcIBxAAGIAEMgcICBAAGIAEMgcICRAAGIAE0gEIMzkxMmowajeoAgiwAgE&sourceid=chrome&ie=UTF-8)  
 
 3. 스키마(데이터베이스)리스트를 보는 방법  
 
@@ -126,6 +132,9 @@ SHOW DATABASES;
 
 >[!example]- 실행 결과
 >![](https://imgur.com/3IlRk0G.png)  
+
+>[!reference]-
+>[구글 검색: how to show database list in mysql](https://www.google.com/search?q=how+to+show+database+list+in+mysql&oq=how+to+show+database+list+in+mysql&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIKCAEQABiABBiiBDIKCAIQABiABBiiBDIKCAMQABiABBiiBNIBCTExNjkzajBqN6gCCLACAQ&sourceid=chrome&ie=UTF-8)  
 
 4. 테이블을 만들기 전 스키마(데이터베이스)를 사용하는 방법
 
