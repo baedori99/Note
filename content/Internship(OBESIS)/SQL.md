@@ -8,7 +8,7 @@ draft: false
 실습은 `MySQL`로 하였다.  
 공부의 출처는 [생활코딩](https://opentutorials.org/course/3161)의 영상을 보며 공부했다.  
 
-## 데이터베이스의 목적
+## 1. 데이터베이스의 목적
 
 ### 스프레드시트와 데이터베이스의 차이점
 
@@ -23,7 +23,7 @@ draft: false
 | 장점  | 직관적, 익히기 쉽다.                                       | 사용시 쿼리 언어에 능숙해야함.<br>데이터 모델링 시 지식과 숙련도 필요 |
 | 단점  | 많은 데이터 처리시 느려짐(저성능)<br>다소 복잡한 내용 청리 어려움<br>동시작업 불가 | 많은 데이터 쉽게 처리(고성능)<br>복잡한 처리 가능<br>동시작업 가능 |
 
-## MySQL의 구조
+## 2. MySQL의 구조
 
 >[!Summary]
 >- 관계형 데이터베이스는 스프레드 시트와 유사하게 표(Table) 형태로 데이터를 저장한다.  
@@ -56,7 +56,49 @@ MySQL을 설치했다는 것은 데이터베이스 서버라는 프로그램을 
 
 ![](https://imgur.com/2xrEZB0.png)
 
+## 3. 서버 접속
+
+- 데이터베이스를 통해 얻을 수 있는 효용
+	1. 보안 - 데이터베이스 자체적인 보안체계를 가지고 있어 안전하게 데이터를 보관할 수 있다.  
+	2. 권한 기능 - MySQL에 여러 사람 등록이 가능하다.  
+		- 차등적으로 권한을 줄 수 있는 기능이 있다.  
+
+MySQL 서버에 접속하기 위한 방법으로는  
+
+1. 일단 `C:\Program Files\MySQL\MySQL Server 8.0\bin` 디렉토리에 들어가 있어야한다.  
+
+![](https://imgur.com/6VkXPbo.png)  
+
+2. `mysql -u root -p`
+
+- `-u`: User(유저)의 약자이다.  
+- `root`: `root`라는 사용자로 접속하겠다는 의미이다.  
+	- 다른 사용자로 바꿀 수 있다.  
+	- `root`는 관리자이기 때문에 모든 권한이 열려 있다.  
+	- **`root`의 권한으로 데이터베이스를 직접 다루는 것은 위험하다.**
+	- 중요한 시스템이라면 별도의 사용자를 만들어서 작업을 하다 중요한 일이 있을 때만 `root`로 들어가는 것이 권장된다.  
+- `-p`: `-p`뒤에 비밀번호를 칠 수 있지만 비밀번호가 보이기엔 `-p`까지만 쓴다.
+	- 이후 MySQL에서 비밀번호를 물어본다.  
+
+![](https://imgur.com/4XM6cFG.png)  
+
+비밀번호를 치고 나면
+
+![](https://imgur.com/sd78hPP.png)  
+
+MySQL 서버에 접속하게 된다.  
+
+지금 이 상태는 위의 [[SQL#Database Server(데이터베이스 서버)|데이터베이스 서버]] 에 있는 그림을 보면 데이터베이스 서버 안으로 들어온 상태라고 볼 수 있다.  
+
+## 4. Schema(스키마)의 사용  
+
+스키마(데이터베이스)를 생성하는 방법
+
+```sql
+
+```
 
 >[!reference]
 >[생활코딩 DATABASE2 - MySQL 유튜브 재생목록](https://www.youtube.com/playlist?list=PLuHgQVnccGMCgrP_9HL3dAcvdt8qOZxjW)  
->[생활코딩 #MySQL의 구조](https://daco2020.tistory.com/24)  
+>[생활코딩 MySQL의 구조](https://daco2020.tistory.com/24)  
+>[생활코딩 - MySQL - 5. 서버접속](https://act-think.tistory.com/135)  
