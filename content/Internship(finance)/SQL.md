@@ -151,9 +151,154 @@ USE opentutorials;
 위의 코드의 뜻은 내가 내리는 명령을 `opentutorials`라고 하는 스키마(데이터베이스)에 있는 표를 대상으로 명령을 실행한다는 의미이다.  
 - 다른 말로 "이 명령어 이후의 쿼리는 해당 데이터베이스에 적용된다."라는 의미이다.  
 
+---
+## 5. SQL과 테이블 구조
 
+SQL은 Structured Query Language의 약자이다.  
+
+### **SQL**
+- **S**tructured: 관계형 데이터베이스가 표의 형태로 정보가 구조화되어 있어서 Structured라는 표현이 쓰였다.  
+- **Q**uery: 데이터 관련 명령(생성, 읽기, 수정, 삭제 등)들을 포괄적으로 데이터베이스에게 요청(질의)한다라는 뜻에서 쓰였다.  
+- **L**anguage: 데이터베이스와 사용자가 서로 이해할 수 있는 공통의 약속에 따라서 사용하는 언어가 SQL이라는 언어다.  
+
+📌SQL 컴퓨터 언어의 두가지 특징
+
+1. 쉽다.  
+2. 중요하다.  
+	- SQL이라는 컴퓨터 언어는 관계형 데이터베이스라는 카테고리에 속하는 제품들이 공통적으로 데이터베이스 서버를 제어할 때 사용하는 표준화된 언어다.  
+	- 압도적인 다수의 데이터베이스 시스템이 SQL을 통해서 동작하고 있다.  
+
+### Table의 구조
+
+![](https://imgur.com/cRzLRxG.png)  
+
+- Column(열): 데이터베이스에서 데이터의 타입/데이터의 구조라고 생각하면 된다. 
+- Row(행): 데이터 하나하나 데이터 자체를 말한다.  
+
+---
+## 6. MySQL 테이블의 생성
+
+📌 스프레드 시트와 데이터베이스의 차이는 데이터베이스의 아주 중요한 기능인 Column에 Data Type을 강제할 수 있다는 것이다.  
+
+- 스프레드 시트로 만든 Table
+![](https://imgur.com/owkPqqM.png)
+
+- 위의 Table을 만들 SQL Query문
+![](https://imgur.com/4LYY9Iq.png)  
+
+- Table을 생성하는 방법 검색하기
+
+구글에 `create table in mysql cheat sheet`를 쳐서 테이블 생성에 대한 정보를 얻는다.  
+
+![](https://imgur.com/J2c7PJQ.png)  
+
+>[!reference]-
+>[SQL Cheat Sheet](https://www.sqltutorial.org/sql-cheat-sheet/)  
+>- 블로그에 더 좋은 자료가 있기에 넣어둔다.  
+
+### Table 생성
+
+위의 스프레드 시트의 테이블 `topic`을 MySQL을 통해 만들어 볼 것이다.  
+1. `id` column 만들기
+
+```sql
+id INT(11) NOT NULL, AUTO_INCREMENT
+```
+
+- `INT(N)`: `datatype`으로 괄호안의 숫자는 나중에 검색할 때 얼마까지만 노출시킬 것인지를 정하는 것이다.  
+- `NOT NULL`: 값이 없는 것을 허용하지 않겠다.(= 무조건 값이 있어야 한다.)
+- `AUTO_INCREMENT`: 자동으로 1씩 증가한다.  
+	- 중복되지 않는 식별자를 갖기 위함이다.  
+
+>[!reference]-
+>[MySQL Datatype 정리](https://www.techonthenet.com/mysql/datatypes.php)  
+
+2. `title` column 만들기  
+
+```sql
+title VARCHAR(100) NOT NULL
+```
+
+- `VARCHAR`: 사이즈가 변할 수 있는 string을 말한다.  
+	- `VAR`: Variable의 약자
+	- `CHAR`: Character의 약자
+
+3. `description` column 만들기
+
+```sql
+description TEXT NULL
+```
+
+- `TEXT`: `VARCHAR`보다 긴 문자열을 저장할 수 있는 datatype
+- `NULL`: 값이 없다.  
+
+4. `created` column 만들기
+
+```sql
+created DATETIME NOT NULL
+```
+
+- `DATETIME`: 날짜와 시간 모두를 표현할 수 있는 datatype
+
+5. `author` column 만들기  
+
+```sql
+author VARCHAR(30) NULL
+```
+
+6. `profile` column 만들기
+
+```sql
+profile VARCHAR(100) NULL
+```
+
+7.  `PRIMARY KEY` 만든다. 
+
+```sql
+PRIMARY KEY(id)
+```
+
+- `PRIMARY KEY`: row을 식별할 때 기준이 되는 키
+	- `id`의 값이 중복이 일어나게 되면 식별자로서의 역할을 수행하기 어렵다.  
+	- 이를 막기 위해 `id`를 `PRIMARY KEY`로 설정하여 테이블에서 각 행을 식별하는 고유한 값을 만들 때 사용한다.  
+
+- PRIMARY KEY 특징
+	- 각 row에 대해 고유하다.(Unique)  
+	- `NULL` 값이 허용 안된다. (`NOT NULL`= <U>무조건 값이 있어야 한다</U>.)
+	- row를 식별하는 데 사용되고 <U>테이블당 하나의 기본키만 지정 가능</U>하다.   
+
+**모든 코드를 합쳐 테이블을 만든다면**  
+
+```sql
+CREATE TABLE topic (
+	id INT(11) NOT NULL AUTO_INCREMENT,
+	title VARCHAR(100) NOT NULL,
+	description TEXT NULL,
+	created DATETIME NOT NULL,
+	author VARCHAR(30) NULL,
+	profile VARCHAR(100) NULL,
+	PRIMARY KEY(id)
+);
+```
+
+>[!example]- 실행 결과
+>![](https://imgur.com/rahVvJr.png)  
+
+>[!error]- ERROR 1820(HY000) 에러
+>![](https://imgur.com/RZTJAUo.png)  
+>
+>- 해결 방법
+>![](https://imgur.com/gIYYz8Q.png)
+>`SET PASSWORD = PASSWORD('your_new_password')`
+
+---
 >[!reference]
 >[생활코딩 DATABASE2 - MySQL 유튜브 재생목록](https://www.youtube.com/playlist?list=PLuHgQVnccGMCgrP_9HL3dAcvdt8qOZxjW)  
 >[생활코딩 MySQL의 구조](https://daco2020.tistory.com/24)  
 >[생활코딩 - MySQL - 5. 서버접속](https://act-think.tistory.com/135)  
 >[MySQL- MySQL의 구조, 서버 접속, 스키마의 사용](https://sunandbean.tistory.com/319)  
+>[SQL-SQL과 테이블 구조(생활코딩)](https://khoonstory.tistory.com/m/33)  
+>[생활코딩- MySQL - 8. 테이블의 생성](https://act-think.tistory.com/138)  
+>[SQL/MySQL/기본키, 고유키, 외래키](https://boring9.tistory.com/54)  
+
+
