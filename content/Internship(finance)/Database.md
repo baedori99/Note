@@ -1,7 +1,7 @@
 ---
 title: Database
 create_date: 2024-08-02 11:08 - 2024-08-02 11:08
-draft: true
+draft: false
 ---
 아마 DB 관련한 일이 많을 거 같기 때문에 DB에 대해서 조금이라도 배경 지식을 얻고자 정리한다.  
 
