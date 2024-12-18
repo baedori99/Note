@@ -1,6 +1,7 @@
 ---
 title: CS 관련 노트
 create_date: 2024-09-02 23:09 - 2024-09-02 23:09
+draft: true
 ---
 # Python
 
