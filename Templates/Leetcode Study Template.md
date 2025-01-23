@@ -2,7 +2,11 @@
 title: <% tp.file.title %>
 date: <% tp.date.now('YYYY-MM-DD') %>
 draft: false
-aliases:
+aliases: 
+tags:
+  - Leetcode
+  - Python
+  - CS
 ---
 # Question Number and Title
 
