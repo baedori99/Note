@@ -15,6 +15,8 @@ tags:
 ## 2. Example
 
 ## 3. Solution
+- Runtime:
+- Time Complexity
 
 ## 4. What I Learned
 
