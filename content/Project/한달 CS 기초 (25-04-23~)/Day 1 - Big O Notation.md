@@ -21,7 +21,10 @@ tags:
 ## Big-O Notation이란?
 - 알고리즘의 효율성을 표기해주는 표기법이다. 
 - 알고리즘의 성능을 결정하기 위해서는 각각의 성능을 평가해야한다. 
-	- 
+	- 1️⃣ Time Complexity (시간 복잡도)
+	- 2️⃣ Space Complexity (공간 복잡도)
+- **알고리즘의 성능 평가는 시간 복잡도만**, 그중에서도 **Big-O 표기법**을 기준
+### Time Complexity (시간 복잡도)
 ---
 
 > [!note] References
